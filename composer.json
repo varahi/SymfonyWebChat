@@ -22,7 +22,10 @@
         "symfonycasts/verify-email-bundle": "^1.17"
     },
     "require-dev": {
-        "symfony/maker-bundle": "^1.65"
+        "friendsofphp/php-cs-fixer": "^3.90",
+        "phpstan/phpstan": "^2.1",
+        "symfony/maker-bundle": "^1.65",
+        "symfony/web-profiler-bundle": "7.4.*"
     },
     "config": {
         "allow-plugins": {
