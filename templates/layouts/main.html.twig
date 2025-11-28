@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% include 'partials/_head.html.twig' %}
+
+<body>
+<div class="chat-container">
+    <div class="chat-header">
+        <h1>Ваш помощник</h1>
+        <p>Отвечаю на вопросы нашего магазина</p>
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+        <div class="message bot-message">
+            Привет! Я ваш научный помощник. Задавайте вопросы по физике, математике и технологиям.
+        </div>
+    </div>
+
+    <div class="quick-questions">
+        <button onclick="sendQuickQuestion('как сделать заказ')">Как заказать?</button>
+        <button onclick="sendQuickQuestion('способы оплаты')">Оплата</button>
+        <button onclick="sendQuickQuestion('способы доставки')">Доставка</button>
+        <button onclick="sendQuickQuestion('время работы')">Время работы</button>
+        <button onclick="sendQuickQuestion('наши новинки')">Новинки</button>
+        <button onclick="sendQuickQuestion('вызов оператора')">Связаться с оператором</button>
+        <!--        <button onclick="sendQuickQuestion('рекомендации по товарам')">Рекоммендации</button>-->
+        <!--        <button onclick="sendQuickQuestion('что покупают с эти товаром')">Связанные товары</button>-->
+    </div>
+
+    <script>
+        function sendQuickQuestion(question) {
+            document.getElementById('user-input').value = question;
+            sendMessage();
+        }
+    </script>
+
+    <div class="typing-indicator" id="typing-indicator">
+        Бот печатает...
+    </div>
+
+    <div class="chat-input">
+        <input type="text" id="user-input" placeholder="Введите ваш вопрос..." autocomplete="off">
+        <button id="send-button">Отправить</button>
+        <button id="clear-btn" style="background: #ff6b6b;">Очистить историю</button>
+    </div>
+</div>
+{% include 'partials/_footer_scripts.html.twig' %}
+</body>
+</html>
