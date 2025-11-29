@@ -5,8 +5,8 @@ namespace App\Service;
 class TopicService
 {
     public function __construct(
-        private readonly array $allowedTopics,
-        private readonly array $forbiddenWords,
+        private readonly string $allowedTopics,
+        private readonly string $forbiddenWords,
     ) {
         // $allowedTopics будет ['finance', 'tech', 'support']
     }
@@ -21,6 +21,12 @@ class TopicService
             if (str_contains($text, $word)) {
                 return true;
             }
+        }
+
+        dd($this->allowedTopics);
+
+        if ($this->allowedTopics === '*') {
+            return false;
         }
 
         // Если ALLOWED_TOPICS содержит '*' — разрешаем всё остальное

@@ -2,6 +2,6 @@
 
 namespace App\Service;
 
-class TelegramService
+class OperatorService
 {
 }

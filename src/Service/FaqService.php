@@ -8,7 +8,7 @@ class FaqService
 {
     public function __construct(
         private LoggerInterface $faqLogger,
-        private array $faq
+        private string $faq
     ) {
     }
 
@@ -18,21 +18,21 @@ class FaqService
         $found = false;
         $matchedPattern = null;
 
-        foreach ($this->faq as $faqItem) {
-            foreach ($faqItem['patterns'] as $pattern) {
-                if (preg_match($pattern, $question)) {
-                    // Логируем найденное совпадение
-                    $matchedPattern = $pattern;
-                    $this->faqLogger->info('Найдено совпадение', [
-                        'question' => $question,
-                        'pattern' => $pattern,
-                        'answer' => $faqItem['answer'],
-                    ]);
-
-                    return $faqItem['answer'];
-                }
-            }
-        }
+//        foreach ($this->faq as $faqItem) {
+//            foreach ($faqItem['patterns'] as $pattern) {
+//                if (preg_match($pattern, $question)) {
+//                    // Логируем найденное совпадение
+//                    $matchedPattern = $pattern;
+//                    $this->faqLogger->info('Найдено совпадение', [
+//                        'question' => $question,
+//                        'pattern' => $pattern,
+//                        'answer' => $faqItem['answer'],
+//                    ]);
+//
+//                    return $faqItem['answer'];
+//                }
+//            }
+//        }
 
         if (!$found) {
             $this->faqLogger->debug("Не найдено совпадений для вопроса: {$question}");

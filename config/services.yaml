@@ -11,6 +11,8 @@ parameters:
     forbidden_words: '%env(string:FORBIDDEN_WORDS)%'
     base_url: '%env(string:BASE_URL)%'
     faq_data: '%kernel.project_dir%/config/faq.php'
+    history_config: '%kernel.project_dir%/config/history_config.php'
+    history_storage: '%kernel.project_dir%/storage/history.json'
 
 services:
     # default configuration for services in *this* file
@@ -31,15 +33,19 @@ services:
         arguments:
             $allowedTopics: '%allowed_topics%'
             $forbiddenWords: '%forbidden_words%'
-
     App\Service\Product\ProductUrlGenerator:
         arguments:
             $baseUrl: '%base_url%'
-
     App\Service\Product\ProductImageService:
         arguments:
             $baseUrl: '%base_url%'
-
     App\Service\FaqService:
         arguments:
             $faq: '%faq_data%'
+    App\Service\HistoryService:
+        arguments:
+            $historyConfig: '%history_config%'
+            $historyStorage: '%history_config%'
+#    App\Service\SessionService:
+##        arguments:
+##            $session: '@session.factory'
