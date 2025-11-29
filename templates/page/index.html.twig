@@ -37,20 +37,8 @@
             Бот печатает...
         </div>
 
-{#        <form action="{{ path('app_chat_message') }}"#}
-{#            autocomplete="off"#}
-{#            method="post"#}
-{#            name="chat_form"#}
-{#        >#}
-{#            <div class="chat-input">#}
-{#                <input type="text" id="user-input" name="message">#}
-{#                <button id="send-button">Отправить</button>#}
-{#                <button id="clear-btn" style="background: #ff6b6b;">Очистить историю</button>#}
-{#            </div>#}
-{#        </form>#}
-
         <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Введите ваш вопрос..." autocomplete="off">
+            <label for="user-input"></label><input type="text" id="user-input" placeholder="Введите ваш вопрос..." autocomplete="off">
             <button id="send-button">Отправить</button>
             <button id="clear-btn" style="background: #ff6b6b;">Очистить историю</button>
         </div>

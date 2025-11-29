@@ -65,10 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
             loadHistory();
 
             // Чистим историю оператора на сервере
-            fetch('/clear_operator_history.php', { method: 'POST' })
-                .then(res => res.json())
-                .then(data => console.log(data))
-                .catch(err => console.error('Ошибка очистки истории оператора', err));
+            // fetch('/clear_operator_history.php', { method: 'POST' })
+            //     .then(res => res.json())
+            //     .then(data => console.log(data))
+            //     .catch(err => console.error('Ошибка очистки истории оператора', err));
         }
     }
 
@@ -114,31 +114,31 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- 🔥 Polling сообщений от оператора ---
     let lastOperatorMessages = [];
 
-    function startPolling() {
-        setInterval(async () => {
-            if (!window.currentUserId) return;
-
-            try {
-                const res = await fetch(`/get_operator_messages.php?user_id=${window.currentUserId}`);
-                const data = await res.json();
-
-                if (data.messages && data.messages.length > 0) {
-                    // Берём только новые сообщения (чтобы не дублировать)
-                    const newMessages = data.messages.filter(
-                        msg => !lastOperatorMessages.some(m => m.text === msg.text && m.time === msg.time)
-                    );
-
-                    newMessages.forEach(msg => {
-                        displayMessage('operator', msg.text);
-                    });
-
-                    lastOperatorMessages = data.messages;
-                }
-            } catch (e) {
-                console.error("Ошибка при получении сообщений оператора:", e);
-            }
-        }, 3000);
-    }
+    // function startPolling() {
+    //     setInterval(async () => {
+    //         if (!window.currentUserId) return;
+    //
+    //         try {
+    //             const res = await fetch(`/get_operator_messages.php?user_id=${window.currentUserId}`);
+    //             const data = await res.json();
+    //
+    //             if (data.messages && data.messages.length > 0) {
+    //                 // Берём только новые сообщения (чтобы не дублировать)
+    //                 const newMessages = data.messages.filter(
+    //                     msg => !lastOperatorMessages.some(m => m.text === msg.text && m.time === msg.time)
+    //                 );
+    //
+    //                 newMessages.forEach(msg => {
+    //                     displayMessage('operator', msg.text);
+    //                 });
+    //
+    //                 lastOperatorMessages = data.messages;
+    //             }
+    //         } catch (e) {
+    //             console.error("Ошибка при получении сообщений оператора:", e);
+    //         }
+    //     }, 3000);
+    // }
 
     // Инициализация
     loadHistory();
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Получение userId → запуск polling
     async function initUser() {
         try {
-            const res = await fetch('/get_user.php');
+            const res = await fetch('/get-user');
             const data = await res.json();
             window.currentUserId = data.userId;
             console.log("User ID:", window.currentUserId);

@@ -34,3 +34,6 @@ assets/
 importmap.php
 phpunit.dist.xml
 tests/
+
+!public/assets/js/
+!public/assets/css/

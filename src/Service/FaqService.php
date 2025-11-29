@@ -4,12 +4,18 @@ namespace App\Service;
 
 use Psr\Log\LoggerInterface;
 
+#[\AllowDynamicProperties]
 class FaqService
 {
     public function __construct(
         private LoggerInterface $faqLogger,
-        private string $faq
+        private string $faqFilePath
     ) {
+        $this->faqData = include $this->faqFilePath;
+
+        if (!is_array($this->faqData)) {
+            throw new \RuntimeException('FAQ config file must return an array');
+        }
     }
 
     public function getPredefinedAnswer(string $question): ?string
@@ -18,21 +24,21 @@ class FaqService
         $found = false;
         $matchedPattern = null;
 
-//        foreach ($this->faq as $faqItem) {
-//            foreach ($faqItem['patterns'] as $pattern) {
-//                if (preg_match($pattern, $question)) {
-//                    // Логируем найденное совпадение
-//                    $matchedPattern = $pattern;
-//                    $this->faqLogger->info('Найдено совпадение', [
-//                        'question' => $question,
-//                        'pattern' => $pattern,
-//                        'answer' => $faqItem['answer'],
-//                    ]);
-//
-//                    return $faqItem['answer'];
-//                }
-//            }
-//        }
+        foreach ($this->faqData as $faqItem) {
+            foreach ($faqItem['patterns'] as $pattern) {
+                if (preg_match($pattern, $question)) {
+                    // Логируем найденное совпадение
+                    $matchedPattern = $pattern;
+                    $this->faqLogger->info('Найдено совпадение', [
+                        'question' => $question,
+                        'pattern' => $pattern,
+                        'answer' => $faqItem['answer'],
+                    ]);
+
+                    return $faqItem['answer'];
+                }
+            }
+        }
 
         if (!$found) {
             $this->faqLogger->debug("Не найдено совпадений для вопроса: {$question}");

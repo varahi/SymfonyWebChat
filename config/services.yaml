@@ -10,9 +10,10 @@ parameters:
     allowed_topics: '%env(string:ALLOWED_TOPICS)%'
     forbidden_words: '%env(string:FORBIDDEN_WORDS)%'
     base_url: '%env(string:BASE_URL)%'
-    faq_data: '%kernel.project_dir%/config/faq.php'
     history_config: '%kernel.project_dir%/config/history_config.php'
     history_storage: '%kernel.project_dir%/storage/history.json'
+    faq_file_path: '%kernel.project_dir%/config/faq.php'
+    chat_config_file: '%kernel.project_dir%/config/chat_config.php'
 
 services:
     # default configuration for services in *this* file
@@ -31,8 +32,7 @@ services:
     # Services
     App\Service\TopicService:
         arguments:
-            $allowedTopics: '%allowed_topics%'
-            $forbiddenWords: '%forbidden_words%'
+            $configFilePath: '%chat_config_file%'
     App\Service\Product\ProductUrlGenerator:
         arguments:
             $baseUrl: '%base_url%'
@@ -41,7 +41,7 @@ services:
             $baseUrl: '%base_url%'
     App\Service\FaqService:
         arguments:
-            $faq: '%faq_data%'
+            $faqFilePath: '%faq_file_path%'
     App\Service\HistoryService:
         arguments:
             $historyConfig: '%history_config%'

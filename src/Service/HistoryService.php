@@ -7,8 +7,7 @@ class HistoryService
     public function __construct(
         private readonly string $historyConfig,
         private readonly string $historyStorage
-    )
-    {
+    ) {
     }
 
     public function updateHistory(string $userId, string $role, string $text): void
