@@ -29,3 +29,8 @@ phpstan.neon
 public/
 rector.php
 symfony.lock
+.env.test
+assets/
+importmap.php
+phpunit.dist.xml
+tests/

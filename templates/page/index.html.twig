@@ -1,0 +1,58 @@
+{% extends 'layouts/main.html.twig' %}
+
+{% block title %}Web chat{% endblock %}
+
+{% block body %}
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Ваш помощник</h1>
+            <p>Отвечаю на вопросы нашего магазина</p>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                Привет! Я ваш помощник по нашему магазину. Задавайте вопросы и я на них отвечу.
+            </div>
+        </div>
+
+{#        <div class="quick-questions">#}
+{#            <button onclick="sendQuickQuestion('как сделать заказ')">Как заказать?</button>#}
+{#            <button onclick="sendQuickQuestion('способы оплаты')">Оплата</button>#}
+{#            <button onclick="sendQuickQuestion('способы доставки')">Доставка</button>#}
+{#            <button onclick="sendQuickQuestion('время работы')">Время работы</button>#}
+{#            <button onclick="sendQuickQuestion('наши новинки')">Новинки</button>#}
+{#            <button onclick="sendQuickQuestion('вызов оператора')">Связаться с оператором</button>#}
+{#            <!--        <button onclick="sendQuickQuestion('рекомендации по товарам')">Рекоммендации</button>-->#}
+{#            <!--        <button onclick="sendQuickQuestion('что покупают с эти товаром')">Связанные товары</button>-->#}
+{#        </div>#}
+
+{#        <script>#}
+{#            function sendQuickQuestion(question) {#}
+{#                document.getElementById('user-input').value = question;#}
+{#                sendMessage();#}
+{#            }#}
+{#        </script>#}
+
+{#        <div class="typing-indicator" id="typing-indicator">#}
+{#            Бот печатает...#}
+{#        </div>#}
+
+        <form action="{{ path('app_chat_message') }}"
+            autocomplete="off"
+            method="post"
+            name="chat_form"
+        >
+            <div class="chat-input">
+                <input type="text" id="user-input" name="message">
+                <button id="send-button">Отправить</button>
+                <button id="clear-btn" style="background: #ff6b6b;">Очистить историю</button>
+            </div>
+        </form>
+
+{#        <div class="chat-input">#}
+{#            <input type="text" id="user-input" placeholder="Введите ваш вопрос..." autocomplete="off">#}
+{#            <button id="send-button">Отправить</button>#}
+{#            <button id="clear-btn" style="background: #ff6b6b;">Очистить историю</button>#}
+{#        </div>#}
+    </div>
+{% endblock %}

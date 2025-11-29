@@ -16,13 +16,17 @@
         "symfony/flex": "^2.10",
         "symfony/framework-bundle": "7.4.*",
         "symfony/mailer": "7.4.*",
+        "symfony/monolog-bundle": "^4.0",
         "symfony/runtime": "7.4.*",
         "symfony/security-bundle": "7.4.*",
         "symfony/yaml": "7.4.*",
-        "symfonycasts/verify-email-bundle": "^1.17.4"
+        "symfonycasts/verify-email-bundle": "^1.17.4",
+        "ext-pdo": "*",
+        "ext-libxml": "*",
+        "ext-dom": "*"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.90",
+        "friendsofphp/php-cs-fixer": "^3.91",
         "phpstan/phpstan": "^2.1.32",
         "symfony/maker-bundle": "^1.65",
         "symfony/web-profiler-bundle": "7.4.*"

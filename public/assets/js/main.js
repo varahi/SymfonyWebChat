@@ -82,12 +82,11 @@ document.addEventListener('DOMContentLoaded', function() {
         showTypingIndicator();
 
         try {
-            const response = await fetch('/index.php', {
+            const response = await fetch('/chat/message', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message })
             });
-
             const data = await response.json();
             displayMessage('bot', data.response);
         } catch (error) {

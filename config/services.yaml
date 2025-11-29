@@ -7,6 +7,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    allowed_topics: '%env(string:ALLOWED_TOPICS)%'
+    forbidden_words: '%env(string:FORBIDDEN_WORDS)%'
+    base_url: '%env(string:BASE_URL)%'
+    faq_data: '%kernel.project_dir%/config/faq.php'
 
 services:
     # default configuration for services in *this* file
@@ -21,3 +25,21 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Services
+    App\Service\TopicService:
+        arguments:
+            $allowedTopics: '%allowed_topics%'
+            $forbiddenWords: '%forbidden_words%'
+
+    App\Service\Product\ProductUrlGenerator:
+        arguments:
+            $baseUrl: '%base_url%'
+
+    App\Service\Product\ProductImageService:
+        arguments:
+            $baseUrl: '%base_url%'
+
+    App\Service\FaqService:
+        arguments:
+            $faq: '%faq_data%'

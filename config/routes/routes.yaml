@@ -1,0 +1,5 @@
+# config/routes.yaml
+chat_options:
+    path: '/chat/message'
+    methods: [OPTIONS]
+    controller: App\Controller\ChatController::options
