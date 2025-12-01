@@ -3,7 +3,6 @@
 namespace App\Controller\Admin\Dashboard;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
 class MainMenuProvider
 {

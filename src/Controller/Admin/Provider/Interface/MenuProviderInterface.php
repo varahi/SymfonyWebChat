@@ -2,8 +2,7 @@
 
 namespace App\Controller\Admin\Provider\Interface;
 
-interface
-FaqMenuProviderInterface
+interface MenuProviderInterface
 {
     public function getItems(): iterable;
 }

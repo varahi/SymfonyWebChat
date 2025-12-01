@@ -17,7 +17,7 @@ class Faq
     #[ORM\Column(length: 255)]
     private ?string $question = null;
 
-    #[ORM\Column(type: "json")]
+    #[ORM\Column(type: 'json')]
     private array $pattern = [];
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

@@ -6,9 +6,7 @@ use App\Entity\Faq;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 #[AdminRoute('/faq', name: 'faq_')]
@@ -18,7 +16,6 @@ class FaqCrudController extends AbstractCrudController
     {
         return Faq::class;
     }
-
 
     public function configureFields(string $pageName): iterable
     {

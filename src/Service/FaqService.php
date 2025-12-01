@@ -7,7 +7,6 @@ use Psr\Log\LoggerInterface;
 
 class FaqService
 {
-
     private array $faqData = [];
 
     public function __construct(
@@ -61,7 +60,7 @@ class FaqService
 
             $this->faqData[] = [
                 'patterns' => $patterns,
-                'answer'   => $item->getAnswer(),
+                'answer' => $item->getAnswer(),
             ];
         }
     }
