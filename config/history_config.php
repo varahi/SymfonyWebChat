@@ -1,5 +1,1 @@
-<?php
-
-return [
-    'max_history' => 5,
-];
+{"user_dea7467c44cdd835":[{"role":"operator","text":"вызов оператора","time":"16:00:12"}]}

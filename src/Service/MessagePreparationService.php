@@ -20,11 +20,12 @@ class MessagePreparationService
         $userId = $this->sessionService->getUserId();
 
         // 0. Если сессия с оператором уже активна — все запросы идут оператору
-        //        if ($this->historyService->isOperatorSession($userId)) {
-        //            $this->historyService->updateHistory($userId, 'operator', $userMessage);
-        //            // ToDo: implement store to database
-        //            return [['role' => 'operator', 'text' => '<div class="system-note">✅ Сообщение отправлено оператору.</div>']];
-        //        }
+        if ($this->historyService->isOperatorSession($userId)) {
+            $this->historyService->updateHistory($userId, 'operator', $userMessage);
+
+            // ToDo: implement store to database
+            return [['role' => 'operator', 'text' => '<div class="system-note">✅ Сообщение отправлено оператору.</div>']];
+        }
 
         // 1. Проверка FAQ
         if ($answer = $this->faqService->getPredefinedAnswer($userMessage)) {
@@ -32,27 +33,31 @@ class MessagePreparationService
         }
 
         // 2. Проверка триггерных фраз // Вызов оператора
-        //        if ($this->shouldTransferToOperator($userMessage, $userId)) {
-        //            $this->historyService->updateHistory($userId, 'operator', $userMessage);
-        //            // ToDo: implement store to database
-        //            return [['role' => 'operator', 'text' => '<div class="system-note">✅ Запрос передан оператору — вы получите ответ в чате.</div>']];
-        //        }
+        if ($this->shouldTransferToOperator($userMessage, $userId)) {
+            $this->historyService->updateHistory($userId, 'operator', $userMessage);
+
+            // ToDo: implement store to database
+            return [['role' => 'operator', 'text' => '<div class="system-note">✅ Запрос передан оператору — вы получите ответ в чате.</div>']];
+        }
 
         // 3. Отображаем новинки
-        //        if ($this->isNewProductQuestion($userMessage)) {
-        //            $products = $this->productService->getNewRandomProducts();
-        //            $answer = $this->productService->generateProductAnswer($userMessage, $products, 'Наши новинки');
-        //            return [['role' => 'assistant', 'text' => $answer]];
-        //        }
+        if ($this->isNewProductQuestion($userMessage)) {
+            $products = $this->productService->getNewRandomProducts();
+            $answer = $this->productService->generateProductAnswer($userMessage, $products, 'Наши новинки');
+
+            return [['role' => 'assistant', 'text' => $answer]];
+        }
 
         // 4. Берем данные из БД
-        //        if ($products = $this->productService->getProductsByQuery($userMessage)) {
-        //            $answer = $this->productService->generateProductAnswer($userMessage, $products, 'Наши товары');
-        //            return [['role' => 'assistant', 'text' => $answer]];
-        //        }
+        if ($products = $this->productService->getProductsByQuery($userMessage)) {
+            $answer = $this->productService->generateProductAnswer($userMessage, $products, 'Наши товары');
+
+            return [['role' => 'assistant', 'text' => $answer]];
+        }
 
         // 5. Вызываем оператора если нет подходящих ответов
-        // $this->historyService->updateHistory($userId, 'operator', $userMessage);
+        $this->historyService->updateHistory($userId, 'operator', $userMessage);
+
         // ToDo: implement store to database
         return [['role' => 'operator', 'text' => '<div class="system-note">✅ Ответ на вопрос не найден, передаем оператору.</div>']];
     }

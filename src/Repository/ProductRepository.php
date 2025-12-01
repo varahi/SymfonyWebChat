@@ -134,7 +134,7 @@ class ProductRepository
             }
 
             return $products;
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             error_log('New random products search error: '.$e->getMessage());
 
             return [];
@@ -163,7 +163,7 @@ class ProductRepository
             $stmt->execute();
 
             return $stmt->fetchAll() ?: [];
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             error_log('Any new products search error: '.$e->getMessage());
 
             return [];

@@ -30,6 +30,8 @@ class ProductUrlGenerator
         if (empty($categoryPath) || empty($productCode)) {
             return $this->baseUrl.'/catalog/';
         }
+
+        return $_ENV['BASE_URL'].'/catalog/'.$categoryPath.'/'.$productCode;
     }
 
     private function getCategoryPath(int $sectionId): string
