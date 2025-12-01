@@ -1,0 +1,6 @@
+# config/packages/easyadmin.yaml
+easy_admin:
+# Отключите pretty URLs
+    pretty_urls: false
+    resource: .
+    type: easyadmin.routes

@@ -2,20 +2,19 @@
 
 namespace App\Service;
 
+use App\Repository\FaqRepository;
 use Psr\Log\LoggerInterface;
 
-#[\AllowDynamicProperties]
 class FaqService
 {
+
+    private array $faqData = [];
+
     public function __construct(
         private LoggerInterface $faqLogger,
-        private string $faqFilePath
+        private FaqRepository $faqRepository
     ) {
-        $this->faqData = include $this->faqFilePath;
-
-        if (!is_array($this->faqData)) {
-            throw new \RuntimeException('FAQ config file must return an array');
-        }
+        $this->loadData();
     }
 
     public function getPredefinedAnswer(string $question): ?string
@@ -45,5 +44,25 @@ class FaqService
         }
 
         return null;
+    }
+
+    private function loadData(): void
+    {
+        $records = $this->faqRepository->findAll();
+
+        foreach ($records as $item) {
+            // $item->getPattern() может быть строкой или JSON
+            $patterns = $item->getPattern();
+
+            if (!is_array($patterns)) {
+                // если это строка — превращаем в массив из 1 элемента
+                $patterns = [$patterns];
+            }
+
+            $this->faqData[] = [
+                'patterns' => $patterns,
+                'answer'   => $item->getAnswer(),
+            ];
+        }
     }
 }

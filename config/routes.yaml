@@ -7,5 +7,10 @@
 # To list all registered routes, run the following command:
 #   bin/console debug:router
 
+### Dashboard
+dashboard:
+    path: /admin
+    controller: App\Controller\Admin\DashboardController::index
+
 controllers:
     resource: routing.controllers

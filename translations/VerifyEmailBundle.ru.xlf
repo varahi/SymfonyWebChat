@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="ru" target-language="ru" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="U_NoHhq" resname="%count% year|%count% years">
+        <source>%count% year|%count% years</source>
+        <target>%count% год|%count% года|%count% лет</target>
+      </trans-unit>
+      <trans-unit id="NCe6niW" resname="%count% month|%count% months">
+        <source>%count% month|%count% months</source>
+        <target>%count% месяц|%count% месяца|%count% месяцев</target>
+      </trans-unit>
+      <trans-unit id="E69bPZ6" resname="%count% day|%count% days">
+        <source>%count% day|%count% days</source>
+        <target>%count% день|%count% дня|%count% дней</target>
+      </trans-unit>
+      <trans-unit id="H3jnVKg" resname="%count% hour|%count% hours">
+        <source>%count% hour|%count% hours</source>
+        <target>%count% час|%count% часа|%count% часов</target>
+      </trans-unit>
+      <trans-unit id="30tji6_" resname="%count% minute|%count% minutes">
+        <source>%count% minute|%count% minutes</source>
+        <target>%count% минута|%count% минуты|%count% минут</target>
+      </trans-unit>
+      <trans-unit id="F0PcQoi" resname="The link to verify your email has expired. Please request a new link.">
+        <source>The link to verify your email has expired. Please request a new link.</source>
+        <target>Срок действия ссылки для проверки вашей электронной почты истек. Пожалуйста, запросите новую ссылку.</target>
+      </trans-unit>
+      <trans-unit id="dSF4hGL" resname="The link to verify your email is invalid. Please request a new link.">
+        <source>The link to verify your email is invalid. Please request a new link.</source>
+        <target>Ссылка для проверки вашей электронной почты недействительна. Пожалуйста, запросите новую ссылку.</target>
+      </trans-unit>
+      <trans-unit id="GTlrnoK" resname="The link to verify your email appears to be for a different account or email. Please request a new link.">
+        <source>The link to verify your email appears to be for a different account or email. Please request a new link.</source>
+        <target>Ссылка для проверки вашей электронной почты, по-видимому, предназначена для другой учетной записи или электронной почты. Пожалуйста, запросите новую ссылку.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

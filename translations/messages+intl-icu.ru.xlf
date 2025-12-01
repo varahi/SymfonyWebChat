@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="ru" target-language="ru" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="sWw5MDD" resname="action.toggle_dropdown">
+        <source>action.toggle_dropdown</source>
+        <target>__action.toggle_dropdown</target>
+      </trans-unit>
+        <trans-unit id="BBy5r7r" resname="Question">
+            <source>question</source>
+            <target>Вопрос</target>
+        </trans-unit>
+        <trans-unit id="BBy5r7c" resname="Answer">
+            <source>Answer</source>
+            <target>Ответ</target>
+        </trans-unit>
+        <trans-unit id="BBy5r7p" resname="Pattern">
+            <source>Pattern</source>
+            <target>Паттерн</target>
+        </trans-unit>
+        <trans-unit id="BBy5r7q" resname="Faq">
+            <source>Faq</source>
+            <target>FAQ</target>
+        </trans-unit>
+        <trans-unit id="BBy5r7z" resname="Faqs">
+            <source>Faqs</source>
+            <target>Вопросы</target>
+        </trans-unit>
+        <trans-unit id="BBy5r7l" resname="Faq list">
+            <source>Faq list</source>
+            <target>Список вопросов</target>
+        </trans-unit>
+    </body>
+  </file>
+</xliff>
