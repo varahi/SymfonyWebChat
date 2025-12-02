@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/admin/client-session')]
-class ChatController extends AbstractController
+class OperatorChatController extends AbstractController
 {
     #[Route('/{id}/chat', name: 'admin_chat', methods: ['GET'])]
     public function chat(ClientSession $session): Response

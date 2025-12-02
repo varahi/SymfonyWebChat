@@ -1,4 +1,9 @@
-{% block content %}
+{% extends 'layouts/main.html.twig' %}
+
+{% block title %}Web chat{% endblock %}
+
+{% block body %}
+
     <h2>Чат с клиентом: {{ session.phone }} ({{ session.name }})</h2>
 
     <div id="chat-window"

@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\MessageRepository;
 use App\Service\MessagePreparationService;
+use App\Service\OperatorChatService;
 use App\Service\SessionService;
 use App\Service\TopicService;
 use Psr\Log\LoggerInterface;
@@ -18,13 +20,19 @@ class HomeController extends AbstractController
         private readonly TopicService $topicService,
         private readonly MessagePreparationService $messagePreparationService,
         private readonly SessionService $sessionService,
+        private readonly OperatorChatService $chatService,
+        private MessageRepository $messageRepository,
     ) {
     }
 
     #[Route('/', name: 'app_home')]
     public function index(
     ): Response {
+        $session = $this->chatService->getOrCreateClientSession();
+        $messages = $this->messageRepository->findMessagesForSession($session->getId());
+
         return $this->render('page/index.html.twig', [
+            'messages' => $messages,
         ]);
     }
 
