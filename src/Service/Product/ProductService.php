@@ -3,8 +3,11 @@
 namespace App\Service\Product;
 
 use App\Repository\ProductRepository;
+use App\Service\Interface\ProductServiceInterface;
+use App\Service\Product\Bitrix\ProductAnswerGenerator;
+use App\Service\Product\Bitrix\ProductUrlGenerator;
 
-class ProductService
+class ProductService implements ProductServiceInterface
 {
     public function __construct(
         private readonly ProductAnswerGenerator $answerGenerator,
@@ -25,12 +28,12 @@ class ProductService
         return $this->urlGenerator->generateProductUrl($product);
     }
 
-    public function getNewRandomProducts()
+    public function getNewRandomProducts(): array
     {
         return $this->productRepository->findNewRandomProducts($this->limit, $this->category);
     }
 
-    public function getProductsByQuery(string $userMessage)
+    public function getProductsByQuery(string $userMessage): array
     {
         return $this->productRepository->findProductsByQuery($userMessage, $this->limit);
     }

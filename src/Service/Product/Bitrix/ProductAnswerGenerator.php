@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Product;
+namespace App\Service\Product\Bitrix;
 
 class ProductAnswerGenerator
 {

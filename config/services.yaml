@@ -39,10 +39,10 @@ services:
     App\Service\TopicService:
         arguments:
             $configFilePath: '%chat_config_file%'
-    App\Service\Product\ProductUrlGenerator:
+    App\Service\Product\Bitrix\ProductUrlGenerator:
         arguments:
             $baseUrl: '%base_url%'
-    App\Service\Product\ProductImageService:
+    App\Service\Product\Bitrix\ProductImageService:
         arguments:
             $baseUrl: '%base_url%'
     App\Service\Product\ProductService:
