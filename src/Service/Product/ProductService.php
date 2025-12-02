@@ -10,6 +10,8 @@ class ProductService
         private readonly ProductAnswerGenerator $answerGenerator,
         private readonly ProductUrlGenerator $urlGenerator,
         private readonly ProductRepository $productRepository,
+        private string $category,
+        private string $limit
     ) {
     }
 
@@ -25,11 +27,11 @@ class ProductService
 
     public function getNewRandomProducts()
     {
-        return $this->productRepository->findNewRandomProducts($_ENV['PRODUCT_RESULT_LIMIT'], $_ENV['NEW_PRODUCT_CATEGORY']);
+        return $this->productRepository->findNewRandomProducts($this->limit, $this->category);
     }
 
     public function getProductsByQuery(string $userMessage)
     {
-        return $this->productRepository->findProductsByQuery($userMessage, $_ENV['PRODUCT_RESULT_LIMIT']);
+        return $this->productRepository->findProductsByQuery($userMessage, $this->limit);
     }
 }

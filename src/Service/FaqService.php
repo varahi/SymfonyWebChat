@@ -24,9 +24,17 @@ class FaqService
 
         foreach ($this->faqData as $faqItem) {
             foreach ($faqItem['patterns'] as $pattern) {
+
+                // Проверка корректности регулярного выражения
+                if (!$this->isValidRegex($pattern)) {
+                    $this->faqLogger->error('Некорректный regex в БД', [
+                        'pattern' => $pattern,
+                        'faq_id' => $faqItem['id'] ?? null,
+                    ]);
+                    continue; // пропускаем ломанный паттерн
+                }
+
                 if (preg_match($pattern, $question)) {
-                    // Логируем найденное совпадение
-                    $matchedPattern = $pattern;
                     $this->faqLogger->info('Найдено совпадение', [
                         'question' => $question,
                         'pattern' => $pattern,
@@ -63,5 +71,14 @@ class FaqService
                 'answer' => $item->getAnswer(),
             ];
         }
+    }
+
+    private function isValidRegex(string $pattern): bool
+    {
+        set_error_handler(function () { return true; });
+        preg_match($pattern, '');
+        restore_error_handler();
+
+        return preg_last_error() === PREG_NO_ERROR;
     }
 }

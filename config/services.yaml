@@ -14,6 +14,8 @@ parameters:
     history_storage: '%kernel.project_dir%/storage/history.json'
     faq_file_path: '%kernel.project_dir%/config/faq.php'
     chat_config_file: '%kernel.project_dir%/config/chat_config.php'
+    new_product_category: '%env(string:NEW_PRODUCT_CATEGORY)%'
+    product_result_limit: '%env(string:PRODUCT_RESULT_LIMIT)%'
 
 services:
     # default configuration for services in *this* file
@@ -43,9 +45,10 @@ services:
     App\Service\Product\ProductImageService:
         arguments:
             $baseUrl: '%base_url%'
-#    App\Service\FaqService:
-#        arguments:
-#            $faqFilePath: '%faq_file_path%'
+    App\Service\Product\ProductService:
+        arguments:
+            $category: '%new_product_category%'
+            $limit: '%product_result_limit%'
     App\Service\HistoryService:
         arguments:
             $historyConfig: '%history_config%'
@@ -53,3 +56,6 @@ services:
 #    App\Service\SessionService:
 ##        arguments:
 ##            $session: '@session.factory'
+#    App\Service\FaqService:
+#        arguments:
+#            $faqFilePath: '%faq_file_path%'

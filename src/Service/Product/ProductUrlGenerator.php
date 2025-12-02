@@ -31,7 +31,7 @@ class ProductUrlGenerator
             return $this->baseUrl.'/catalog/';
         }
 
-        return $_ENV['BASE_URL'].'/catalog/'.$categoryPath.'/'.$productCode;
+        return $this->baseUrl.'/catalog/'.$categoryPath.'/'.$productCode;
     }
 
     private function getCategoryPath(int $sectionId): string

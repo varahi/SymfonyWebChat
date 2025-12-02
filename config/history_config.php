@@ -1,1 +1,1 @@
-{"user_dea7467c44cdd835":[{"role":"operator","text":"вызов оператора","time":"16:00:12"}]}
+{"user_22e495eed39fcd99":[{"role":"operator","text":"вызов оператора","time":"11:51:36"}]}
