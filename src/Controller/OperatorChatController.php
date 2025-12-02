@@ -48,6 +48,7 @@ class OperatorChatController extends AbstractController
         $em->persist($message);
         $em->flush();
 
+        // ToDo: use websocket
         // Event for Reverb
         // dispatch(new \App\MessageEvent\MessageCreated($message));
 
