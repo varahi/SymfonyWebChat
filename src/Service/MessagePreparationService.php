@@ -42,43 +42,43 @@ class MessagePreparationService
         }
 
         // 2. Проверка триггерных фраз // Вызов оператора
-        if ($this->shouldTransferToOperator($userMessage, $userId)) {
-            $this->chatService->storeClientMessage($session, $userMessage);
-
-            return [[
-                'role' => MessageRole::OPERATOR->value,
-                'text' => '<div class="system-note">📨 Запрос передан оператору — ожидайте ответ.</div>',
-            ]];
-        }
+        //        if ($this->shouldTransferToOperator($userMessage, $userId)) {
+        //            $this->chatService->storeClientMessage($session, $userMessage);
+        //
+        //            return [[
+        //                'role' => MessageRole::OPERATOR->value,
+        //                'text' => '<div class="system-note">📨 Запрос передан оператору — ожидайте ответ.</div>',
+        //            ]];
+        //        }
 
         // 3. Отображаем новинки
-        if ($this->isNewProductQuestion($userMessage)) {
-            $products = $this->productService->getNewRandomProducts();
-            $answer = $this->productService->generateProductAnswer(
-                $userMessage,
-                $products,
-                'Наши новинки'
-            );
-
-            return [[
-                'role' => MessageRole::ASSISTANT->value,
-                'text' => $answer,
-            ]];
-        }
+        //        if ($this->isNewProductQuestion($userMessage)) {
+        //            $products = $this->productService->getNewRandomProducts();
+        //            $answer = $this->productService->generateProductAnswer(
+        //                $userMessage,
+        //                $products,
+        //                'Наши новинки'
+        //            );
+        //
+        //            return [[
+        //                'role' => MessageRole::ASSISTANT->value,
+        //                'text' => $answer,
+        //            ]];
+        //        }
 
         // 4. Берем данные из БД
-        if ($products = $this->productService->getProductsByQuery($userMessage)) {
-            $answer = $this->productService->generateProductAnswer(
-                $userMessage,
-                $products,
-                'Наши товары'
-            );
-
-            return [[
-                'role' => MessageRole::ASSISTANT->value,
-                'text' => $answer,
-            ]];
-        }
+        //        if ($products = $this->productService->getProductsByQuery($userMessage)) {
+        //            $answer = $this->productService->generateProductAnswer(
+        //                $userMessage,
+        //                $products,
+        //                'Наши товары'
+        //            );
+        //
+        //            return [[
+        //                'role' => MessageRole::ASSISTANT->value,
+        //                'text' => $answer,
+        //            ]];
+        //        }
 
         // 5. Вызываем оператора если нет подходящих ответов
         $this->chatService->storeClientMessage($session, $userMessage);

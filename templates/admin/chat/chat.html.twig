@@ -1,0 +1,78 @@
+{% block content %}
+    <h2>Чат с клиентом: {{ session.phone }} ({{ session.name }})</h2>
+
+    <div id="chat-window"
+         style="height: 400px; overflow-y: auto; padding: 10px; border: 1px solid #ddd; background: #fff;">
+        {% for message in messages %}
+            <div class="message {{ message.role.value }}" style="margin-bottom: 10px;">
+                <strong>{{ message.role.value == 'CLIENT' ? 'Клиент' : 'Оператор' }}:</strong>
+                <div>{{ message.message }}</div>
+                <small style="color: #999">{{ message.createdAt|date('H:i') }}</small>
+            </div>
+        {% endfor %}
+    </div>
+
+    <hr>
+
+    <form id="reply-form">
+        <textarea name="text" class="form-control" rows="3" placeholder="Введите ответ..."></textarea>
+        <button class="btn btn-primary mt-2">Отправить</button>
+    </form>
+
+    <script>
+        const chatWindow = document.getElementById('chat-window');
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        const sessionId = {{ session.id }};
+
+        // --- Long Polling ---
+        async function pollMessages() {
+            try {
+                const response = await fetch('{{ path("admin_chat_poll", { id: session.id }) }}');
+                const data = await response.json();
+
+                chatWindow.innerHTML = '';
+
+                data.messages.forEach(m => {
+                    const div = document.createElement('div');
+                    div.classList.add('message');
+                    div.classList.add(m.role.value);
+                    div.style.marginBottom = '10px';
+                    div.innerHTML = `
+                        <strong>${m.role.value === 'CLIENT' ? 'Клиент' : 'Оператор'}:</strong>
+                        <div>${m.text}</div>
+                        <small style="color:#999">${m.createdAt}</small>
+                    `;
+                    chatWindow.appendChild(div);
+                });
+
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            } catch (e) {
+                console.error('Ошибка опроса:', e);
+            }
+
+            setTimeout(pollMessages, 2000); // опрашиваем каждые 2 сек
+        }
+
+        pollMessages();
+
+        // --- Отправка ответа ---
+        document.getElementById('reply-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const text = e.target.text.value;
+
+            const res = await fetch('{{ path("admin_chat_reply", {id: session.id}) }}', {
+                method: 'POST',
+                body: new URLSearchParams({text}),
+            });
+
+            if (res.ok) {
+                e.target.text.value = '';
+                pollMessages();
+            }
+        });
+    </script>
+
+{% endblock %}
