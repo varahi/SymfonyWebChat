@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Enum\MessageRole;
 use App\Service\Product\ProductService;
 
 class MessagePreparationService
@@ -10,56 +11,82 @@ class MessagePreparationService
         private readonly FaqService $faqService,
         private readonly HistoryService $historyService,
         private readonly ProductService $productService,
-        private readonly SessionService $sessionService
+        private readonly SessionService $sessionService,
+        private readonly OperatorChatService $chatService
     ) {
     }
 
     public function prepare(string $userMessage): array
     {
+        $session = $this->chatService->getOrCreateClientSession();
+
         // return [['role' => 'operator', 'text' => '<div class="system-note">✅ Сообщение отправлено оператору.</div>']];
         $userId = $this->sessionService->getUserId();
 
         // 0. Если сессия с оператором уже активна — все запросы идут оператору
-        if ($this->historyService->isOperatorSession($userId)) {
-            $this->historyService->updateHistory($userId, 'operator', $userMessage);
+        if ($this->chatService->isOperatorSession($session)) {
+            $this->chatService->storeClientMessage($session, $userMessage);
 
-            // ToDo: implement store to database
-            return [['role' => 'operator', 'text' => '<div class="system-note">✅ Сообщение отправлено оператору.</div>']];
+            return [[
+                'role' => MessageRole::OPERATOR->value,
+                'text' => '<div class="system-note">✅ Сообщение отправлено оператору.</div>',
+            ]];
         }
 
         // 1. Проверка FAQ
         if ($answer = $this->faqService->getPredefinedAnswer($userMessage)) {
-            return [['role' => 'assistant', 'text' => '<div class="products-card"> '.$answer.'</div>']]; // ← Только готовый ответ
+            return [[
+                'role' => MessageRole::ASSISTANT->value,
+                'text' => '<div class="products-card">'.$answer.'</div>',
+            ]];
         }
 
         // 2. Проверка триггерных фраз // Вызов оператора
         if ($this->shouldTransferToOperator($userMessage, $userId)) {
-            $this->historyService->updateHistory($userId, 'operator', $userMessage);
+            $this->chatService->storeClientMessage($session, $userMessage);
 
-            // ToDo: implement store to database
-            return [['role' => 'operator', 'text' => '<div class="system-note">✅ Запрос передан оператору — вы получите ответ в чате.</div>']];
+            return [[
+                'role' => MessageRole::OPERATOR->value,
+                'text' => '<div class="system-note">📨 Запрос передан оператору — ожидайте ответ.</div>',
+            ]];
         }
 
         // 3. Отображаем новинки
         if ($this->isNewProductQuestion($userMessage)) {
             $products = $this->productService->getNewRandomProducts();
-            $answer = $this->productService->generateProductAnswer($userMessage, $products, 'Наши новинки');
+            $answer = $this->productService->generateProductAnswer(
+                $userMessage,
+                $products,
+                'Наши новинки'
+            );
 
-            return [['role' => 'assistant', 'text' => $answer]];
+            return [[
+                'role' => MessageRole::ASSISTANT->value,
+                'text' => $answer,
+            ]];
         }
 
         // 4. Берем данные из БД
         if ($products = $this->productService->getProductsByQuery($userMessage)) {
-            $answer = $this->productService->generateProductAnswer($userMessage, $products, 'Наши товары');
+            $answer = $this->productService->generateProductAnswer(
+                $userMessage,
+                $products,
+                'Наши товары'
+            );
 
-            return [['role' => 'assistant', 'text' => $answer]];
+            return [[
+                'role' => MessageRole::ASSISTANT->value,
+                'text' => $answer,
+            ]];
         }
 
         // 5. Вызываем оператора если нет подходящих ответов
-        $this->historyService->updateHistory($userId, 'operator', $userMessage);
+        $this->chatService->storeClientMessage($session, $userMessage);
 
-        // ToDo: implement store to database
-        return [['role' => 'operator', 'text' => '<div class="system-note">✅ Ответ на вопрос не найден, передаем оператору.</div>']];
+        return [[
+            'role' => MessageRole::OPERATOR->value,
+            'text' => '<div class="system-note">❗ Ответ не найден — запрос передан оператору.</div>',
+        ]];
     }
 
     private function shouldTransferToOperator(string $userMessage, string $userId): bool

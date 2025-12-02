@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\MessageRole;
+use App\Enum\MessageStatus;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,8 +19,8 @@ class Message
     #[ORM\Column(type: Types::TEXT)]
     private ?string $message = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    #[ORM\Column(enumType: MessageStatus::class)]
+    private MessageStatus|null $status = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -27,8 +28,8 @@ class Message
     #[ORM\ManyToOne(inversedBy: 'messages')]
     private ?ClientSession $clientSession = null;
 
-    #[ORM\Column(type: 'string', enumType: MessageRole::class)]
-    private string $role;
+    #[ORM\Column(enumType: MessageRole::class)]
+    private MessageRole $role;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     private ?User $operator = null;
@@ -50,16 +51,14 @@ class Message
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?MessageStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(MessageStatus $status): void
     {
         $this->status = $status;
-
-        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -86,12 +85,12 @@ class Message
         return $this;
     }
 
-    public function getRole(): string
+    public function getRole(): MessageRole
     {
         return $this->role;
     }
 
-    public function setRole(string $role): void
+    public function setRole(MessageRole $role): void
     {
         $this->role = $role;
     }
