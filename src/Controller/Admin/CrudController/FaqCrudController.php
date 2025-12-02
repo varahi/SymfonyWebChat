@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\CrudController;
 
 use App\Entity\Faq;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;

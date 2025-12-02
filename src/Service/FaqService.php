@@ -24,7 +24,6 @@ class FaqService
 
         foreach ($this->faqData as $faqItem) {
             foreach ($faqItem['patterns'] as $pattern) {
-
                 // Проверка корректности регулярного выражения
                 if (!$this->isValidRegex($pattern)) {
                     $this->faqLogger->error('Некорректный regex в БД', [
@@ -79,6 +78,6 @@ class FaqService
         preg_match($pattern, '');
         restore_error_handler();
 
-        return preg_last_error() === PREG_NO_ERROR;
+        return PREG_NO_ERROR === preg_last_error();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\MessageRole;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,14 +21,17 @@ class Message
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'senderMessages')]
-    private ?User $sender = null;
-
-    #[ORM\ManyToOne(inversedBy: 'receiverMessages')]
-    private ?User $receiver = null;
-
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'messages')]
+    private ?ClientSession $clientSession = null;
+
+    #[ORM\Column(type: 'string', enumType: MessageRole::class)]
+    private string $role;
+
+    #[ORM\ManyToOne(inversedBy: 'messages')]
+    private ?User $operator = null;
 
     public function getId(): ?int
     {
@@ -58,30 +62,6 @@ class Message
         return $this;
     }
 
-    public function getSender(): ?User
-    {
-        return $this->sender;
-    }
-
-    public function setSender(?User $sender): static
-    {
-        $this->sender = $sender;
-
-        return $this;
-    }
-
-    public function getReceiver(): ?User
-    {
-        return $this->receiver;
-    }
-
-    public function setReceiver(?User $receiver): static
-    {
-        $this->receiver = $receiver;
-
-        return $this;
-    }
-
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -90,6 +70,40 @@ class Message
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getClientSession(): ?ClientSession
+    {
+        return $this->clientSession;
+    }
+
+    public function setClientSession(?ClientSession $clientSession): static
+    {
+        $this->clientSession = $clientSession;
+
+        return $this;
+    }
+
+    public function getRole(): string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): void
+    {
+        $this->role = $role;
+    }
+
+    public function getOperator(): ?User
+    {
+        return $this->operator;
+    }
+
+    public function setOperator(?User $operator): static
+    {
+        $this->operator = $operator;
 
         return $this;
     }

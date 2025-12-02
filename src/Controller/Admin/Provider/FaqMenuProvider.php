@@ -2,12 +2,12 @@
 
 namespace App\Controller\Admin\Provider;
 
-use App\Controller\Admin\FaqCrudController;
+use App\Controller\Admin\CrudController\FaqCrudController;
 use App\Controller\Admin\Provider\Interface\MenuProviderInterface;
 use App\Entity\Faq;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 
-class MenuProvider implements MenuProviderInterface
+class FaqMenuProvider implements MenuProviderInterface
 {
     public function getItems(): iterable
     {
