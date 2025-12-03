@@ -32,7 +32,6 @@ class OperatorChatService
             ->findOneBy([
                 'externalId' => $userId,
                 'closedAt' => null,
-                'status' => ClientSessionStatus::OPENED,
             ]);
 
         //        $this->chatLogger->info('Найдено совпадение session', [
@@ -49,6 +48,20 @@ class OperatorChatService
             $this->em->persist($session);
             $this->em->flush();
         }
+
+        return $session;
+    }
+
+    public function getClientSession(): ClientSession
+    {
+        $userId = $this->sessionService->getUserId();
+
+        $session = $this->em->getRepository(ClientSession::class)
+            ->findOneBy([
+                'externalId' => $userId,
+                'closedAt' => null,
+                'status' => ClientSessionStatus::OPENED,
+            ]);
 
         return $session;
     }

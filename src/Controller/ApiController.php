@@ -146,7 +146,7 @@ class ApiController extends AbstractController
     #[Route('/get-operator-messages', name: 'api_operator_messages')]
     public function getMessages(): JsonResponse
     {
-        $session = $this->chatService->getOrCreateClientSession();
+        $session = $this->chatService->getClientSession();
         if (!$session) {
             return new JsonResponse(['error' => 'Session not found'], 400);
         }

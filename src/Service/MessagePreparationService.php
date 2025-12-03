@@ -68,18 +68,18 @@ class MessagePreparationService
         }
 
         // 4. Берем данные из БД
-        //        if ($products = $this->productService->getProductsByQuery($userMessage)) {
-        //            $answer = $this->productService->generateProductAnswer(
-        //                $userMessage,
-        //                $products,
-        //                'Наши товары'
-        //            );
-        //
-        //            return [[
-        //                'role' => MessageRole::ASSISTANT->value,
-        //                'text' => $answer,
-        //            ]];
-        //        }
+        if ($products = $this->productService->getProductsByQuery($userMessage)) {
+            $answer = $this->productService->generateProductAnswer(
+                $userMessage,
+                $products,
+                'Наши товары'
+            );
+
+            return [[
+                'role' => MessageRole::ASSISTANT->value,
+                'text' => $answer,
+            ]];
+        }
 
         // 5. Вызываем оператора если нет подходящих ответов
         $this->chatService->storeClientMessage($session, $userMessage);
