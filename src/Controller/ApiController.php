@@ -58,11 +58,11 @@ class ApiController extends AbstractController
             //          $message = $request->request->get('message');
             $message = $input['message'] ?? null;
 
-            $logger->debug('📥 Данные запроса', [
-                'message_from_request' => $message,
-                'input_array' => $input,
-                'raw_body' => $request->getContent(),
-            ]);
+            //            $logger->debug('📥 Данные запроса', [
+            //                'message_from_request' => $message,
+            //                'input_array' => $input,
+            //                'raw_body' => $request->getContent(),
+            //            ]);
 
             if (empty($message)) {
                 $logger->warning('❌ Пустое сообщение', ['input' => $input]);
@@ -73,9 +73,9 @@ class ApiController extends AbstractController
                 );
             }
 
-            $logger->info('🔍 Проверка темы сообщения', ['message' => $message]);
+            // $logger->info('🔍 Проверка темы сообщения', ['message' => $message]);
             if ($this->topicService->isForbidden($message)) {
-                $logger->warning('🚫 Запрещенная тема', ['message' => $message]);
+                // $logger->warning('🚫 Запрещенная тема', ['message' => $message]);
 
                 return new JsonResponse(
                     ['error' => 'Данная тема запрещена'],
@@ -83,13 +83,13 @@ class ApiController extends AbstractController
                 );
             }
 
-            $logger->info('⚙️ Подготовка ответа', ['message' => $message]);
+            // $logger->info('⚙️ Подготовка ответа', ['message' => $message]);
             $response = $this->messagePreparationService->prepare($message);
 
-            $logger->info('✅ Успешный ответ', [
-                'original_message' => $message,
-                'response_length' => strlen($response[0]['text'] ?? ''),
-            ]);
+            //            $logger->info('✅ Успешный ответ', [
+            //                'original_message' => $message,
+            //                'response_length' => strlen($response[0]['text'] ?? ''),
+            //            ]);
 
             return new JsonResponse([
                 'response' => $response[0]['text'] ?? 'Не удалось сгенерировать ответ',
@@ -126,15 +126,6 @@ class ApiController extends AbstractController
 
         return new JsonResponse(null, 204);
     }
-
-    //    #[Route('/clear-session', name: 'app_clear_session', methods: ['POST'])]
-    //    public function clearSession(): JsonResponse
-    //    {
-    //        $userId = $this->sessionService->getUserId();
-    //        $this->sessionService->closeSession($userId);
-    //
-    //        return new JsonResponse(null, 204);
-    //    }
 
     #[Route('/clear-session', name: 'app_clear_session', methods: ['POST'])]
     public function clearSession(): JsonResponse

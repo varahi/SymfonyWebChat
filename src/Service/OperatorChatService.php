@@ -8,6 +8,7 @@ use App\Enum\ClientSessionStatus;
 use App\Enum\MessageRole;
 use App\Enum\MessageStatus;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class OperatorChatService
@@ -15,7 +16,8 @@ class OperatorChatService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly Security $security,
-        private readonly SessionService $sessionService
+        private readonly SessionService $sessionService,
+        private LoggerInterface $chatLogger,
     ) {
     }
 
@@ -30,7 +32,14 @@ class OperatorChatService
             ->findOneBy([
                 'externalId' => $userId,
                 'closedAt' => null,
+                'status' => ClientSessionStatus::OPENED,
             ]);
+
+        //        $this->chatLogger->info('Найдено совпадение session', [
+        //            'externalId' => $userId,
+        //            'closedAt' => null,
+        //            'status' => ClientSessionStatus::OPENED
+        //        ]);
 
         if (!$session) {
             $session = new ClientSession();

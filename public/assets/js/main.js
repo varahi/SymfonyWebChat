@@ -72,22 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Очистка сессия для связи с оператором
-    // function endSession() {
-    //     fetch('/api/clear-session', {
-    //         method: 'POST',
-    //         headers: {
-    //             "Content-Type": "application/json"
-    //         }
-    //     })
-    //         .then(response => {
-    //             if (response.status === 204) {
-    //                 window.location.reload();
-    //             }
-    //         })
-    //         .catch(err => console.error('Ошибка:', err));
-    // }
-
     // Отправка сообщения
     async function sendMessage() {
         const message = userInput.value.trim();

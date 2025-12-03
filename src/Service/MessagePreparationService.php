@@ -30,6 +30,7 @@ class MessagePreparationService
             return [[
                 'role' => MessageRole::OPERATOR->value,
                 'text' => '<div class="system-note">✅ Сообщение отправлено оператору.</div>',
+                // 'text' => '',
             ]];
         }
 
@@ -67,25 +68,25 @@ class MessagePreparationService
         }
 
         // 4. Берем данные из БД
-        if ($products = $this->productService->getProductsByQuery($userMessage)) {
-            $answer = $this->productService->generateProductAnswer(
-                $userMessage,
-                $products,
-                'Наши товары'
-            );
-
-            return [[
-                'role' => MessageRole::ASSISTANT->value,
-                'text' => $answer,
-            ]];
-        }
+        //        if ($products = $this->productService->getProductsByQuery($userMessage)) {
+        //            $answer = $this->productService->generateProductAnswer(
+        //                $userMessage,
+        //                $products,
+        //                'Наши товары'
+        //            );
+        //
+        //            return [[
+        //                'role' => MessageRole::ASSISTANT->value,
+        //                'text' => $answer,
+        //            ]];
+        //        }
 
         // 5. Вызываем оператора если нет подходящих ответов
         $this->chatService->storeClientMessage($session, $userMessage);
 
         return [[
             'role' => MessageRole::OPERATOR->value,
-            'text' => '<div class="system-note">❗ Ответ не найден — запрос передан оператору.</div>',
+            'text' => '<div class="system-note">❗ Ответ передан оператору.</div>',
         ]];
     }
 

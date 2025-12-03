@@ -8,16 +8,15 @@
             <h1>Ваш помощник</h1>
             <p>Отвечаю на вопросы нашего магазина</p>
         </div>
-
         <div class="chat-messages" id="chat-messages">
             <div class="message bot-message">
                 Привет! Я ваш помощник по нашему магазину. Задавайте вопросы и я на них отвечу.
-                {% for msg in messages %}
-                    <div class="message
-                        {% if msg.operator %} operator-message {% else %} user-message {% endif %}">
-                        {{ msg.message|raw }}
-                    </div>
-                {% endfor %}
+{#                {% for msg in messages %}#}
+{#                    <div class="message#}
+{#                        {% if msg.operator %} operator-message {% else %} user-message {% endif %}">#}
+{#                        {{ msg.message|raw }}#}
+{#                    </div>#}
+{#                {% endfor %}#}
             </div>
         </div>
 
@@ -30,9 +29,6 @@
             <button id="session-btn" data-session-closed="{{ sessionStatus.value == 'closed' ? '1' : '0' }}">
                 {% if sessionStatus.value == 'closed' %}Связаться с оператором{% else %}Завершить связь{% endif %}
             </button>
-
-            <!--        <button onclick="sendQuickQuestion('рекомендации по товарам')">Рекоммендации</button>-->
-            <!--        <button onclick="sendQuickQuestion('что покупают с эти товаром')">Связанные товары</button>-->
         </div>
 
         <script>
