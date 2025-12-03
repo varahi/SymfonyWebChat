@@ -2,15 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\Message;
-use App\Enum\MessageRole;
 use App\Repository\MessageRepository;
 use App\Service\HistoryService;
 use App\Service\MessagePreparationService;
 use App\Service\OperatorChatService;
 use App\Service\SessionService;
 use App\Service\TopicService;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,6 +23,7 @@ class ApiController extends AbstractController
         private readonly SessionService $sessionService,
         private readonly HistoryService $historyService,
         private readonly OperatorChatService $chatService,
+        private readonly MessageRepository $messageRepository,
     ) {
     }
 
@@ -145,59 +143,24 @@ class ApiController extends AbstractController
         return new JsonResponse(null, 204);
     }
 
-    // ###################################################################################################################
-
-    #[Route('/messages', name: 'api_messages')]
-    public function messages(
-        MessageRepository $repo
-    ): JsonResponse {
+    #[Route('/get-operator-messages', name: 'api_operator_messages')]
+    public function getMessages(): JsonResponse
+    {
         $session = $this->chatService->getOrCreateClientSession();
-        $messages = $repo->findMessagesForSession($session->getId());
+        if (!$session) {
+            return new JsonResponse(['error' => 'Session not found'], 400);
+        }
 
-        return $this->json([
-            'messages' => array_map(fn ($m) => [
-                'id' => $m->getId(),
-                'role' => $m->getOperator() ? 'operator' : 'user',
-                'content' => $m->getMessage(),
-                'time' => $m->getCreatedAt()->format('c'),
-            ], $messages),
-        ]);
-    }
+        // Получаем только операторские сообщения
+        $messages = $this->messageRepository->findOperatorMessagesForSession($session->getId());
 
-    #[Route('/send', name: 'api_send', methods: ['POST'])]
-    public function send(
-        Request $request,
-        MessagePreparationService $prep,
-        TopicService $topics,
-        OperatorChatService $chatService,
-        EntityManagerInterface $em
-    ): JsonResponse {
-        $session = $chatService->getOrCreateClientSession();
-        $data = json_decode($request->getContent(), true);
-        $text = $data['message'] ?? '';
-
-        // сохраняем сообщение пользователя
-        $msg = new Message();
-        $msg->setClientSession($session);
-        $msg->setMessage($text);
-        $msg->setRole(MessageRole::CLIENT);
-        $msg->setCreatedAt(new \DateTimeImmutable());
-        $em->persist($msg);
-        $em->flush();
-
-        // ответ бота
-        // $responseText = $topics->generateAnswer($text);
-        $responseText = 'Вы написали: '.$text;
-
-        // сохраняем ответ бота
-        $reply = new Message();
-        $reply->setClientSession($session);
-        $reply->setMessage($responseText);
-        $reply->setRole(MessageRole::SYSTEM);
-        $reply->setCreatedAt(new \DateTimeImmutable());
-        $em->persist($reply);
-        $em->flush();
-
-        return $this->json(['response' => $responseText]);
+        return new JsonResponse([
+            'messages' => array_map(function ($msg) {
+                return [
+                    'text' => $msg->getMessage(),
+                    'time' => $msg->getCreatedAt()->format('Y-m-d H:i:s'),
+                ];
+            }, $messages),
+        ], 200);
     }
 }

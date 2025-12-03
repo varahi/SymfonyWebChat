@@ -164,3 +164,9 @@ body {
 .quick-questions {
     margin-bottom: 20px;
 }
+
+.operator-message {
+    background: #fff3cd;
+    align-self: flex-start;
+    border-left: 4px solid #ffcc00;
+}

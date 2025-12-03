@@ -38,4 +38,17 @@ class MessageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findOperatorMessagesForSession(int $sessionId): array
+    {
+        return $this->createQueryBuilder('m')
+            ->join('m.clientSession', 'cs')
+            ->where('cs.id = :sid')
+            ->andWhere('m.role = :role')
+            ->setParameter('sid', $sessionId)
+            ->setParameter('role', \App\Enum\MessageRole::OPERATOR)
+            ->orderBy('m.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

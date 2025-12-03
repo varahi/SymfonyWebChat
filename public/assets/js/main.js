@@ -111,35 +111,35 @@ document.addEventListener('DOMContentLoaded', function() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // --- 🔥 Polling сообщений от оператора ---
-    let lastOperatorMessages = [];
+    let lastReceived = 0;
 
-    // ToDo: will be deleted
-    // function startPolling() {
-    //     setInterval(async () => {
-    //         if (!window.currentUserId) return;
-    //
-    //         try {
-    //             const res = await fetch(`/get_operator_messages.php?user_id=${window.currentUserId}`);
-    //             const data = await res.json();
-    //
-    //             if (data.messages && data.messages.length > 0) {
-    //                 // Берём только новые сообщения (чтобы не дублировать)
-    //                 const newMessages = data.messages.filter(
-    //                     msg => !lastOperatorMessages.some(m => m.text === msg.text && m.time === msg.time)
-    //                 );
-    //
-    //                 newMessages.forEach(msg => {
-    //                     displayMessage('operator', msg.text);
-    //                 });
-    //
-    //                 lastOperatorMessages = data.messages;
-    //             }
-    //         } catch (e) {
-    //             console.error("Ошибка при получении сообщений оператора:", e);
-    //         }
-    //     }, 3000);
-    // }
+    function startPolling() {
+        setInterval(async () => {
+
+            if (!window.currentUserId) return;
+
+            try {
+                const res = await fetch('/api/get-operator-messages');
+                const data = await res.json();
+
+                if (!data.messages) return;
+
+                // показываем только новые сообщения
+                const newMessages = data.messages.filter((m, index) => index >= lastReceived);
+
+                newMessages.forEach(msg => {
+                    displayMessage('operator', msg.text);
+                });
+
+                lastReceived = data.messages.length;
+
+            } catch (e) {
+                console.error("Ошибка получения операторских сообщений", e);
+            }
+
+        }, 3000);
+    }
+
 
     // Инициализация
     loadHistory();
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await res.json();
             window.currentUserId = data.userId;
             console.log("User ID:", window.currentUserId);
-            //startPolling();
+            startPolling();
         } catch (err) {
             console.error("Ошибка получения userId:", err);
         }
