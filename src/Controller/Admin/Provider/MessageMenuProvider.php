@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin\Provider;
 
-use App\Controller\Admin\CrudController\MessageCrudController;
+use App\Controller\Admin\CrudController\Message\MessageCrudController;
 use App\Controller\Admin\Provider\Interface\MenuProviderInterface;
 use App\Entity\Message;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;

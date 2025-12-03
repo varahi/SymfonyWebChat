@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin\CrudController;
+namespace App\Controller\Admin\CrudController\ClientSession;
 
 use App\Entity\ClientSession;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class ClientSessionCrudController extends AbstractCrudController
+class AbstractClientSessionCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {

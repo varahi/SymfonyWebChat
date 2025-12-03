@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin\CrudController;
+namespace App\Controller\Admin\CrudController\Message;
 
 use App\Entity\Message;
 use App\Enum\MessageRole;
@@ -8,7 +8,6 @@ use App\Enum\MessageStatus;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 
 class MessageCrudController extends AbstractCrudController
