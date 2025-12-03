@@ -2,10 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Message;
+use App\Enum\MessageRole;
+use App\Repository\MessageRepository;
 use App\Service\HistoryService;
 use App\Service\MessagePreparationService;
+use App\Service\OperatorChatService;
 use App\Service\SessionService;
 use App\Service\TopicService;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,6 +25,7 @@ class ApiController extends AbstractController
         private readonly MessagePreparationService $messagePreparationService,
         private readonly SessionService $sessionService,
         private readonly HistoryService $historyService,
+        private readonly OperatorChatService $chatService,
     ) {
     }
 
@@ -108,9 +114,81 @@ class ApiController extends AbstractController
         Request $request,
         LoggerInterface $logger,
     ): JsonResponse {
+        // Clear history
         $userId = $this->sessionService->getUserId();
         $this->historyService->clearHistory($userId);
 
+        // Close session
+        // $this->sessionService->closeSession($userId);
+
+        // Clear session Внимание, этот метод удаляет записи сообщений, Cascade remove
+        // $this->sessionService->clearSession($userId);
+
         return new JsonResponse(null, 204);
+    }
+
+    #[Route('/clear-session', name: 'app_clear_session', methods: ['POST'])]
+    public function clearSession(): JsonResponse
+    {
+        $userId = $this->sessionService->getUserId();
+        $this->sessionService->closeSession($userId);
+
+        return new JsonResponse(null, 204);
+    }
+
+    // ###################################################################################################################
+
+    #[Route('/messages', name: 'api_messages')]
+    public function messages(
+        MessageRepository $repo
+    ): JsonResponse {
+        $session = $this->chatService->getOrCreateClientSession();
+        $messages = $repo->findMessagesForSession($session->getId());
+
+        return $this->json([
+            'messages' => array_map(fn ($m) => [
+                'id' => $m->getId(),
+                'role' => $m->getOperator() ? 'operator' : 'user',
+                'content' => $m->getMessage(),
+                'time' => $m->getCreatedAt()->format('c'),
+            ], $messages),
+        ]);
+    }
+
+    #[Route('/send', name: 'api_send', methods: ['POST'])]
+    public function send(
+        Request $request,
+        MessagePreparationService $prep,
+        TopicService $topics,
+        OperatorChatService $chatService,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        $session = $chatService->getOrCreateClientSession();
+        $data = json_decode($request->getContent(), true);
+        $text = $data['message'] ?? '';
+
+        // сохраняем сообщение пользователя
+        $msg = new Message();
+        $msg->setClientSession($session);
+        $msg->setMessage($text);
+        $msg->setRole(MessageRole::CLIENT);
+        $msg->setCreatedAt(new \DateTimeImmutable());
+        $em->persist($msg);
+        $em->flush();
+
+        // ответ бота
+        // $responseText = $topics->generateAnswer($text);
+        $responseText = 'Вы написали: '.$text;
+
+        // сохраняем ответ бота
+        $reply = new Message();
+        $reply->setClientSession($session);
+        $reply->setMessage($responseText);
+        $reply->setRole(MessageRole::SYSTEM);
+        $reply->setCreatedAt(new \DateTimeImmutable());
+        $em->persist($reply);
+        $em->flush();
+
+        return $this->json(['response' => $responseText]);
     }
 }

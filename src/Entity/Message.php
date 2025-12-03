@@ -25,7 +25,8 @@ class Message
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'messages')]
+    #[ORM\ManyToOne(targetEntity: ClientSession::class, inversedBy: 'messages')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?ClientSession $clientSession = null;
 
     #[ORM\Column(enumType: MessageRole::class)]

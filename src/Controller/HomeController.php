@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\ClientSession;
 use App\Repository\MessageRepository;
 use App\Service\OperatorChatService;
+use App\Service\SessionService;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,6 +16,8 @@ class HomeController extends AbstractController
     public function __construct(
         private readonly OperatorChatService $chatService,
         private MessageRepository $messageRepository,
+        private readonly SessionService $sessionService,
+        private readonly ManagerRegistry $doctrine,
     ) {
     }
 
@@ -22,8 +27,18 @@ class HomeController extends AbstractController
         $session = $this->chatService->getOrCreateClientSession();
         $messages = $this->messageRepository->findMessagesForSession($session->getId());
 
+        $userId = $this->sessionService->getUserId();
+        $session = $this->doctrine
+            ->getRepository(ClientSession::class)
+            ->findOneBy(['externalId' => $userId]);
+
+        $sessionClosed = null !== $session?->getClosedAt(); // bool
+
+        // dd($sessionClosed);
+
         return $this->render('page/index.html.twig', [
             'messages' => $messages,
+            'sessionClosed' => $sessionClosed,
         ]);
     }
 }

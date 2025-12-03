@@ -53,20 +53,4 @@ class HistoryService
     {
         file_put_contents($this->historyStorage, json_encode($this->history, JSON_UNESCAPED_UNICODE));
     }
-
-    public function isOperatorSession(string $userId): bool
-    {
-        $history = $this->getHistory($userId);
-        foreach (array_reverse($history) as $item) {
-            if ('operator' === $item['role'] && !empty($item['text'])) {
-                return true;
-            }
-            // Можно добавить условие: если бот дал нормальный ответ, операторская сессия закрывается
-            if ('assistant' === $item['role']) {
-                break;
-            }
-        }
-
-        return false;
-    }
 }

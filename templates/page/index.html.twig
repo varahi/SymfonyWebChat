@@ -27,7 +27,10 @@
             <button onclick="sendQuickQuestion('способы доставки')">Доставка</button>
             <button onclick="sendQuickQuestion('время работы')">Время работы</button>
             <button onclick="sendQuickQuestion('наши новинки')">Новинки</button>
-            <button onclick="sendQuickQuestion('вызов оператора')">Связаться с оператором</button>
+            <button id="session-btn" data-session-closed="{{ sessionClosed ? '1' : '0' }}">
+                {% if sessionClosed %}Связаться с оператором{% else %}Завершить связь{% endif %}
+            </button>
+
             <!--        <button onclick="sendQuickQuestion('рекомендации по товарам')">Рекоммендации</button>-->
             <!--        <button onclick="sendQuickQuestion('что покупают с эти товаром')">Связанные товары</button>-->
         </div>

@@ -72,6 +72,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Очистка сессия для связи с оператором
+    function endSession() {
+        fetch('/api/clear-session', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                if (response.status === 204) {
+                    window.location.reload();
+                }
+            })
+            .catch(err => console.error('Ошибка:', err));
+    }
+
     // Отправка сообщения
     async function sendMessage() {
         const message = userInput.value.trim();
@@ -115,31 +131,31 @@ document.addEventListener('DOMContentLoaded', function() {
     let lastOperatorMessages = [];
 
     // ToDo: will be deleted
-    // function startPolling() {
-    //     setInterval(async () => {
-    //         if (!window.currentUserId) return;
-    //
-    //         try {
-    //             const res = await fetch(`/get_operator_messages.php?user_id=${window.currentUserId}`);
-    //             const data = await res.json();
-    //
-    //             if (data.messages && data.messages.length > 0) {
-    //                 // Берём только новые сообщения (чтобы не дублировать)
-    //                 const newMessages = data.messages.filter(
-    //                     msg => !lastOperatorMessages.some(m => m.text === msg.text && m.time === msg.time)
-    //                 );
-    //
-    //                 newMessages.forEach(msg => {
-    //                     displayMessage('operator', msg.text);
-    //                 });
-    //
-    //                 lastOperatorMessages = data.messages;
-    //             }
-    //         } catch (e) {
-    //             console.error("Ошибка при получении сообщений оператора:", e);
-    //         }
-    //     }, 3000);
-    // }
+    function startPolling() {
+        setInterval(async () => {
+            if (!window.currentUserId) return;
+
+            try {
+                const res = await fetch(`/get_operator_messages.php?user_id=${window.currentUserId}`);
+                const data = await res.json();
+
+                if (data.messages && data.messages.length > 0) {
+                    // Берём только новые сообщения (чтобы не дублировать)
+                    const newMessages = data.messages.filter(
+                        msg => !lastOperatorMessages.some(m => m.text === msg.text && m.time === msg.time)
+                    );
+
+                    newMessages.forEach(msg => {
+                        displayMessage('operator', msg.text);
+                    });
+
+                    lastOperatorMessages = data.messages;
+                }
+            } catch (e) {
+                console.error("Ошибка при получении сообщений оператора:", e);
+            }
+        }, 3000);
+    }
 
     // Инициализация
     loadHistory();
@@ -147,6 +163,19 @@ document.addEventListener('DOMContentLoaded', function() {
     userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
+    const btn = document.getElementById('session-btn');
+    if (btn) {
+        btn.addEventListener('click', () => {
+            const closed = btn.dataset.sessionClosed === '1';
+
+            if (!closed) {
+                endSession();
+            } else {
+                sendQuickQuestion('вызов оператора');
+            }
+        });
+    }
+
     document.getElementById('clear-btn')?.addEventListener('click', clearHistory);
 
     // Получение userId → запуск polling
@@ -156,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await res.json();
             window.currentUserId = data.userId;
             console.log("User ID:", window.currentUserId);
-            startPolling();
+            //startPolling();
         } catch (err) {
             console.error("Ошибка получения userId:", err);
         }
