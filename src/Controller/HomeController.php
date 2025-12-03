@@ -32,13 +32,12 @@ class HomeController extends AbstractController
             ->getRepository(ClientSession::class)
             ->findOneBy(['externalId' => $userId]);
 
-        $sessionClosed = null !== $session?->getClosedAt(); // bool
-
-        // dd($sessionClosed);
+        // $sessionClosed = null !== $session?->getClosedAt(); // bool
+        $sessionStatus = $session->getStatus();
 
         return $this->render('page/index.html.twig', [
             'messages' => $messages,
-            'sessionClosed' => $sessionClosed,
+            'sessionStatus' => $sessionStatus,
         ]);
     }
 }

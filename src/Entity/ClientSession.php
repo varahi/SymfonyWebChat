@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\ClientSessionStatus;
 use App\Repository\ClientSessionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -35,6 +36,9 @@ class ClientSession
      */
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'clientSession')]
     private Collection $messages;
+
+    #[ORM\Column(enumType: ClientSessionStatus::class)]
+    private ClientSessionStatus $status;
 
     public function __construct()
     {
@@ -132,5 +136,15 @@ class ClientSession
         }
 
         return $this;
+    }
+
+    public function getStatus(): ClientSessionStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(ClientSessionStatus $status): void
+    {
+        $this->status = $status;
     }
 }

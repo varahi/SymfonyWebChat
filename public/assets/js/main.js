@@ -73,20 +73,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Очистка сессия для связи с оператором
-    function endSession() {
-        fetch('/api/clear-session', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-            .then(response => {
-                if (response.status === 204) {
-                    window.location.reload();
-                }
-            })
-            .catch(err => console.error('Ошибка:', err));
-    }
+    // function endSession() {
+    //     fetch('/api/clear-session', {
+    //         method: 'POST',
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         }
+    //     })
+    //         .then(response => {
+    //             if (response.status === 204) {
+    //                 window.location.reload();
+    //             }
+    //         })
+    //         .catch(err => console.error('Ошибка:', err));
+    // }
 
     // Отправка сообщения
     async function sendMessage() {
@@ -131,31 +131,31 @@ document.addEventListener('DOMContentLoaded', function() {
     let lastOperatorMessages = [];
 
     // ToDo: will be deleted
-    function startPolling() {
-        setInterval(async () => {
-            if (!window.currentUserId) return;
-
-            try {
-                const res = await fetch(`/get_operator_messages.php?user_id=${window.currentUserId}`);
-                const data = await res.json();
-
-                if (data.messages && data.messages.length > 0) {
-                    // Берём только новые сообщения (чтобы не дублировать)
-                    const newMessages = data.messages.filter(
-                        msg => !lastOperatorMessages.some(m => m.text === msg.text && m.time === msg.time)
-                    );
-
-                    newMessages.forEach(msg => {
-                        displayMessage('operator', msg.text);
-                    });
-
-                    lastOperatorMessages = data.messages;
-                }
-            } catch (e) {
-                console.error("Ошибка при получении сообщений оператора:", e);
-            }
-        }, 3000);
-    }
+    // function startPolling() {
+    //     setInterval(async () => {
+    //         if (!window.currentUserId) return;
+    //
+    //         try {
+    //             const res = await fetch(`/get_operator_messages.php?user_id=${window.currentUserId}`);
+    //             const data = await res.json();
+    //
+    //             if (data.messages && data.messages.length > 0) {
+    //                 // Берём только новые сообщения (чтобы не дублировать)
+    //                 const newMessages = data.messages.filter(
+    //                     msg => !lastOperatorMessages.some(m => m.text === msg.text && m.time === msg.time)
+    //                 );
+    //
+    //                 newMessages.forEach(msg => {
+    //                     displayMessage('operator', msg.text);
+    //                 });
+    //
+    //                 lastOperatorMessages = data.messages;
+    //             }
+    //         } catch (e) {
+    //             console.error("Ошибка при получении сообщений оператора:", e);
+    //         }
+    //     }, 3000);
+    // }
 
     // Инициализация
     loadHistory();
@@ -168,10 +168,20 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', () => {
             const closed = btn.dataset.sessionClosed === '1';
 
-            if (!closed) {
-                endSession();
+            if (closed) {
+                // Сессия закрыта → открываем
+                fetch('api/open-session', { method: 'POST' })
+                    .then(res => {
+                        if (res.ok) window.location.reload();
+                    })
+                    .catch(err => console.error('Ошибка открытия сессии:', err));
             } else {
-                sendQuickQuestion('вызов оператора');
+                // Сессия открыта → закрываем
+                fetch('api/clear-session', { method: 'POST' })
+                    .then(res => {
+                        if (res.status === 204) window.location.reload();
+                    })
+                    .catch(err => console.error('Ошибка закрытия сессии:', err));
             }
         });
     }

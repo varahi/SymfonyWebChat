@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\ClientSession;
 use App\Entity\Message;
+use App\Enum\ClientSessionStatus;
 use App\Enum\MessageRole;
 use App\Enum\MessageStatus;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,6 +35,7 @@ class OperatorChatService
         if (!$session) {
             $session = new ClientSession();
             $session->setExternalId($userId);
+            $session->setStatus(ClientSessionStatus::CLOSED);
             $session->setCreatedAt(new \DateTimeImmutable());
             $this->em->persist($session);
             $this->em->flush();
@@ -125,6 +127,7 @@ class OperatorChatService
      */
     public function closeSession(ClientSession $session): void
     {
+        $session->setStatus(ClientSessionStatus::CLOSED);
         $session->setClosedAt(new \DateTimeImmutable());
         $this->em->flush();
     }
