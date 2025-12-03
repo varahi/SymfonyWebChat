@@ -170,3 +170,25 @@ body {
     align-self: flex-start;
     border-left: 4px solid #ffcc00;
 }
+
+.client-info-modal {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.6);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content {
+    background:white;
+    padding:20px;
+    border-radius:8px;
+    width:300px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+#client-info-inline {
+    padding: 8px 20px !important;
+}

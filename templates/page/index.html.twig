@@ -25,6 +25,20 @@
             </button>
         </div>
 
+        <div id="client-info-modal" class="client-info-modal" style="display:none;">
+            <div class="modal-content">
+                <h3>Представьтесь, пожалуйста</h3>
+
+                <label>Ваше имя</label>
+                <input type="text" id="client-name" placeholder="Имя">
+
+                <label>Телефон</label>
+                <input type="text" id="client-phone" placeholder="+7...">
+
+                <button id="save-client-info">Продолжить</button>
+            </div>
+        </div>
+
         <script>
             function sendQuickQuestion(question) {
                 document.getElementById('user-input').value = question;

@@ -8,6 +8,7 @@ use App\Service\MessagePreparationService;
 use App\Service\OperatorChatService;
 use App\Service\SessionService;
 use App\Service\TopicService;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,6 +25,7 @@ class ApiController extends AbstractController
         private readonly HistoryService $historyService,
         private readonly OperatorChatService $chatService,
         private readonly MessageRepository $messageRepository,
+        private readonly ManagerRegistry $doctrine,
     ) {
     }
 
@@ -162,5 +164,39 @@ class ApiController extends AbstractController
                 ];
             }, $messages),
         ], 200);
+    }
+
+    #[Route('/session/set-client-data', methods: ['POST'])]
+    public function setClientData(
+        Request $request,
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $name = $data['name'] ?? null;
+        $phone = $data['phone'] ?? null;
+
+        if (!$name || !$phone) {
+            return new JsonResponse(['error' => 'Invalid data'], 400);
+        }
+        $clientSession = $this->chatService->getOrCreateClientSession();
+
+        if (!$clientSession) {
+            return new JsonResponse(['error' => 'No client session'], 400);
+        }
+
+        if (!$clientSession) {
+            return new JsonResponse(['error' => 'Session not found'], 404);
+        }
+
+        // обновляем
+        $clientSession->setName($name);
+        $clientSession->setPhone($phone);
+
+        $em = $this->doctrine->getManager();
+        $em->persist($clientSession);
+        $em->flush();
+
+        // $sessionRepo->save($clientSession, true);
+
+        return new JsonResponse(['status' => 'ok']);
     }
 }
