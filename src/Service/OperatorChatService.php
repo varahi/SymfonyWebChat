@@ -60,39 +60,10 @@ class OperatorChatService
             ->findOneBy([
                 'externalId' => $userId,
                 'closedAt' => null,
-                'status' => ClientSessionStatus::OPENED,
+                // 'status' => ClientSessionStatus::OPENED,
             ]);
 
         return $session;
-    }
-
-    /**
-     * Проверяем, активна ли уже операторская сессия.
-     * Аналог isOperatorSession из твоего предыдущего класса.
-     */
-    public function isOperatorSession(ClientSession $session): bool
-    {
-        $messages = $session->getMessages()->toArray();
-        if (!$messages) {
-            return false;
-        }
-
-        // Идем с конца (последние сообщения)
-        $messages = array_reverse($messages);
-
-        foreach ($messages as $msg) {
-            // Если последнее значимое сообщение — от оператора → сессия открыта
-            if (MessageRole::OPERATOR === $msg->getRole()) {
-                return true;
-            }
-
-            // Если ассистент уже давал ответ — дальнейшие сообщения не считаем
-            if (MessageRole::ASSISTANT === $msg->getRole()) {
-                return false;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -114,21 +85,21 @@ class OperatorChatService
     /**
      * Записываем сообщение оператора (когда админ отвечает в EasyAdmin).
      */
-    public function storeOperatorMessage(ClientSession $session, string $text): void
-    {
-        $operator = $this->security->getUser();
-
-        $msg = new Message();
-        $msg->setClientSession($session);
-        $msg->setRole(MessageRole::OPERATOR);
-        $msg->setStatus(MessageStatus::PROCESSED);
-        $msg->setOperator($operator);
-        $msg->setMessage($text);
-        $msg->setCreatedAt(new \DateTimeImmutable());
-
-        $this->em->persist($msg);
-        $this->em->flush();
-    }
+    //    public function storeOperatorMessage(ClientSession $session, string $text): void
+    //    {
+    //        $operator = $this->security->getUser();
+    //
+    //        $msg = new Message();
+    //        $msg->setClientSession($session);
+    //        $msg->setRole(MessageRole::OPERATOR);
+    //        $msg->setStatus(MessageStatus::PROCESSED);
+    //        $msg->setOperator($operator);
+    //        $msg->setMessage($text);
+    //        $msg->setCreatedAt(new \DateTimeImmutable());
+    //
+    //        $this->em->persist($msg);
+    //        $this->em->flush();
+    //    }
 
     /**
      * Получить последние N сообщений — для контекста LLM.
@@ -144,13 +115,13 @@ class OperatorChatService
         ], $messages);
     }
 
-    /**
+    /*
      * Закрыть клиентскую сессию.
      */
-    public function closeSession(ClientSession $session): void
-    {
-        $session->setStatus(ClientSessionStatus::CLOSED);
-        $session->setClosedAt(new \DateTimeImmutable());
-        $this->em->flush();
-    }
+    //    public function closeSession(ClientSession $session): void
+    //    {
+    //        $session->setStatus(ClientSessionStatus::CLOSED);
+    //        $session->setClosedAt(new \DateTimeImmutable());
+    //        $this->em->flush();
+    //    }
 }

@@ -19,18 +19,15 @@ class MessagePreparationService
     public function prepare(string $userMessage): array
     {
         $session = $this->chatService->getOrCreateClientSession();
-
-        // return [['role' => 'operator', 'text' => '<div class="system-note">✅ Сообщение отправлено оператору.</div>']];
         $userId = $this->sessionService->getUserId();
 
         // 0. Если сессия с оператором уже активна — все запросы идут оператору
-        if ($this->chatService->isOperatorSession($session)) {
+        if ($this->sessionService->isOperatorSession($session, $userId)) {
             $this->chatService->storeClientMessage($session, $userMessage);
 
             return [[
                 'role' => MessageRole::OPERATOR->value,
                 'text' => '<div class="system-note">✅ Сообщение отправлено оператору.</div>',
-                // 'text' => '',
             ]];
         }
 
@@ -86,7 +83,8 @@ class MessagePreparationService
 
         return [[
             'role' => MessageRole::OPERATOR->value,
-            'text' => '<div class="system-note">❗ Ответ передан оператору.</div>',
+            // 'text' => '<div class="system-note">❗ Нет подходящих ответов. Свяжитесь с оператором.</div>',
+            'text' => '<div class="system-note">❗ Связь с оператором.</div>',
         ]];
     }
 

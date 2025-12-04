@@ -99,4 +99,17 @@ class SessionService
         $phpSession->remove(SessionService::SESSION_USER_ID_KEY);
         $phpSession->migrate(true); // создаёт новое PHP session_id
     }
+
+    public function isOperatorSession(ClientSession $session, string $userId): bool
+    {
+        if ($session->getExternalId() !== $userId) {
+            return false;
+        }
+
+        if (ClientSessionStatus::OPENED !== $session->getStatus()) {
+            return false;
+        }
+
+        return true;
+    }
 }

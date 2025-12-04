@@ -127,8 +127,8 @@ class ApiController extends AbstractController
         return new JsonResponse(null, 204);
     }
 
-    #[Route('/clear-session', name: 'app_clear_session', methods: ['POST'])]
-    public function clearSession(): JsonResponse
+    #[Route('/close-session', name: 'app_clear_session', methods: ['POST'])]
+    public function closeSession(): JsonResponse
     {
         $userId = $this->sessionService->getUserId();
         $this->sessionService->closeSession($userId);
