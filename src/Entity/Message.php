@@ -35,6 +35,11 @@ class Message
     #[ORM\ManyToOne(inversedBy: 'messages')]
     private ?User $operator = null;
 
+    public function __toString(): string
+    {
+        return 'ID - '.$this->id.' '.$this->message.' '.$this->createdAt->format('Y-m-d H:i:s');
+    }
+
     public function getId(): ?int
     {
         return $this->id;

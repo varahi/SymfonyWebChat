@@ -9,29 +9,73 @@
         <source>action.toggle_dropdown</source>
         <target>__action.toggle_dropdown</target>
       </trans-unit>
-        <trans-unit id="BBy5r7r" resname="Question">
-            <source>question</source>
-            <target>Вопрос</target>
+      <trans-unit id="W1WJHfF" resname="Question">
+        <source>Question</source>
+        <target>Вопрос</target>
+      </trans-unit>
+      <trans-unit id="UEDNrXU" resname="Answer">
+        <source>Answer</source>
+        <target>Ответ</target>
+      </trans-unit>
+      <trans-unit id="vfXErDz" resname="Pattern">
+        <source>Pattern</source>
+        <target>Паттерн</target>
+      </trans-unit>
+      <trans-unit id="3CTzsql" resname="Faq">
+        <source>Faq</source>
+        <target>FAQ</target>
+      </trans-unit>
+      <trans-unit id="LGjPv9b" resname="Faqs">
+        <source>Faqs</source>
+        <target>Вопросы</target>
+      </trans-unit>
+      <trans-unit id="rtAgXQK" resname="Faq list">
+        <source>Faq list</source>
+        <target>Список вопросов</target>
+      </trans-unit>
+      <trans-unit id="JZi_tm0" resname="Email">
+        <source>Email</source>
+        <target>Email</target>
+      </trans-unit>
+      <trans-unit id="VhxhtYo" resname="Username">
+        <source>Username</source>
+        <target>Имя</target>
+      </trans-unit>
+      <trans-unit id="5ARE17J" resname="Client Sessions">
+        <source>Client Sessions</source>
+        <target>Сессии клиентов</target>
+      </trans-unit>
+      <trans-unit id="MBkPNTF" resname="Opened Session">
+        <source>Opened Session</source>
+        <target>Сессии с оператором</target>
+      </trans-unit>
+      <trans-unit id="m54T4Xj" resname="Closed Session">
+        <source>Closed Session</source>
+        <target>Сессии без оператора</target>
+      </trans-unit>
+      <trans-unit id="BCGjfox" resname="Users">
+        <source>Users</source>
+        <target>Пользователи</target>
+      </trans-unit>
+      <trans-unit id="29b7vEl" resname="Admins">
+        <source>Admins</source>
+        <target>Операторы</target>
+      </trans-unit>
+      <trans-unit id="OOR9jZx" resname="ClientSession">
+        <source>ClientSession</source>
+        <target>Сессии</target>
+      </trans-unit>
+        <trans-unit id="Phone" resname="Phone">
+            <source>Phone</source>
+            <target>Телефон</target>
         </trans-unit>
-        <trans-unit id="BBy5r7c" resname="Answer">
-            <source>Answer</source>
-            <target>Ответ</target>
+        <trans-unit id="Name" resname="Name">
+            <source>Name</source>
+            <target>Имя</target>
         </trans-unit>
-        <trans-unit id="BBy5r7p" resname="Pattern">
-            <source>Pattern</source>
-            <target>Паттерн</target>
-        </trans-unit>
-        <trans-unit id="BBy5r7q" resname="Faq">
-            <source>Faq</source>
-            <target>FAQ</target>
-        </trans-unit>
-        <trans-unit id="BBy5r7z" resname="Faqs">
-            <source>Faqs</source>
-            <target>Вопросы</target>
-        </trans-unit>
-        <trans-unit id="BBy5r7l" resname="Faq list">
-            <source>Faq list</source>
-            <target>Список вопросов</target>
+        <trans-unit id="Created At" resname="Created At">
+            <source>Created At</source>
+            <target>Создано</target>
         </trans-unit>
     </body>
   </file>

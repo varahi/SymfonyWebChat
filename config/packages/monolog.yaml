@@ -54,22 +54,22 @@ when@prod:
                 path: php://stderr
                 formatter: monolog.formatter.json
 
-    channels:
-        - faq  # Добавляем кастомный канал
-    handlers:
-        # Обычный файл с JSON форматом
-        faq_file:
-            type: stream
-            path: "%kernel.logs_dir%/faq.log"
-            level: debug
-            channels: ["faq"]
-            formatter: monolog.formatter.json_formatter
-
-        # Простой текстовый файл (как у вас было)
-        faq_debug_file:
-            type: stream
-            path: "%kernel.logs_dir%/faq_debug.log"
-            level: debug
-            channels: ["faq"]
-            formatter: monolog.formatter.line_formatter
-            # Или кастомный форматтер для точного повторения вашего стиля
+#    channels:
+#        - faq  # Добавляем кастомный канал
+#    handlers:
+#        # Обычный файл с JSON форматом
+#        faq_file:
+#            type: stream
+#            path: "%kernel.logs_dir%/faq.log"
+#            level: debug
+#            channels: ["faq"]
+#            formatter: monolog.formatter.json_formatter
+#
+#        # Простой текстовый файл (как у вас было)
+#        faq_debug_file:
+#            type: stream
+#            path: "%kernel.logs_dir%/faq_debug.log"
+#            level: debug
+#            channels: ["faq"]
+#            formatter: monolog.formatter.line_formatter
+#            # Или кастомный форматтер для точного повторения вашего стиля

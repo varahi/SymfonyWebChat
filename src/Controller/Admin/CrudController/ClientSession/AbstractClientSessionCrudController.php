@@ -3,13 +3,18 @@
 namespace App\Controller\Admin\CrudController\ClientSession;
 
 use App\Entity\ClientSession;
+use App\Form\Crud\MessageFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class AbstractClientSessionCrudController extends AbstractCrudController
 {
@@ -18,6 +23,14 @@ class AbstractClientSessionCrudController extends AbstractCrudController
         return ClientSession::class;
     }
 
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(EntityFilter::new('messages'))
+        ;
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
     public function configureActions(Actions $actions): Actions
     {
         $openChat = Action::new('openChat', 'Открыть чат')
@@ -42,6 +55,10 @@ class AbstractClientSessionCrudController extends AbstractCrudController
         yield TextField::new('externalId')
             ->setColumns('col-md-8')
             ->setDisabled()
+            ->hideOnIndex();
+
+        yield CollectionField::new('messages')
+            ->setFormTypeOption('entry_type', MessageFormType::class)
             ->hideOnIndex();
     }
 }
