@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\ClientSession;
 use App\Repository\MessageRepository;
 use App\Service\HistoryService;
 use App\Service\Interface\ChatBotServiceInterface;
@@ -27,7 +28,6 @@ class ApiController extends AbstractController
         private readonly OperatorChatService $chatService,
         private readonly MessageRepository $messageRepository,
         private readonly ManagerRegistry $doctrine,
-        private readonly ChatBotServiceInterface $chatBotService,
     ) {
     }
 
@@ -41,27 +41,28 @@ class ApiController extends AbstractController
 
     #[Route('/chat', name: 'api_chat_no_slash', methods: ['POST', 'OPTIONS', 'GET'])]
     #[Route('/chat/', name: 'api_chat_with_slash', methods: ['POST', 'OPTIONS', 'GET'])]
-    public function chat(Request $request): JsonResponse
+    public function chatSession(): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $message = $data['message'] ?? '';
+        $session = $this->chatService->getOrCreateClientSession();
+        $messages = $this->messageRepository->findMessagesForSession($session->getId());
 
-        if (!$message) {
-            return new JsonResponse(['error' => 'Empty message'], 400);
-        }
+        $userId = $this->sessionService->getUserId();
+        $sessionEntity = $this->doctrine
+            ->getRepository(ClientSession::class)
+            ->findOneBy(['externalId' => $userId]);
 
-        $reply = $this->chatBotService->processMessage($message);
+        $sessionStatus = $sessionEntity->getStatus();
 
-        file_put_contents('/var/log/chat.log',
-            '=== '.date('Y-m-d H:i:s')." ===\n".
-            'Content: '.$request->getContent()."\n",
-            FILE_APPEND
-        );
+        $messagesArray = array_map(fn($msg) => [
+            'id' => $msg->getId(),
+            'role' => $msg->getRole(),
+            'content' => $msg->getContent(),
+            'createdAt' => $msg->getCreatedAt()?->format('c')
+        ], $messages);
 
         return new JsonResponse([
-            // 'debug' => true,
-            'message' => $message,
-            // 'server' => $_SERVER,
+            'sessionStatus' => $sessionStatus,
+            'messages' => $messagesArray
         ]);
     }
 
