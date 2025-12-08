@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\MessageRepository;
 use App\Service\HistoryService;
+use App\Service\Interface\ChatBotServiceInterface;
 use App\Service\MessagePreparationService;
 use App\Service\OperatorChatService;
 use App\Service\SessionService;
@@ -26,6 +27,7 @@ class ApiController extends AbstractController
         private readonly OperatorChatService $chatService,
         private readonly MessageRepository $messageRepository,
         private readonly ManagerRegistry $doctrine,
+        private readonly ChatBotServiceInterface $chatBotService,
     ) {
     }
 
@@ -34,6 +36,32 @@ class ApiController extends AbstractController
     {
         return $this->json([
             'userId' => $this->sessionService->getUserId(),
+        ]);
+    }
+
+    #[Route('/chat', name: 'api_chat_no_slash', methods: ['POST', 'OPTIONS', 'GET'])]
+    #[Route('/chat/', name: 'api_chat_with_slash', methods: ['POST', 'OPTIONS', 'GET'])]
+    public function chat(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $message = $data['message'] ?? '';
+
+        if (!$message) {
+            return new JsonResponse(['error' => 'Empty message'], 400);
+        }
+
+        $reply = $this->chatBotService->processMessage($message);
+
+        file_put_contents('/var/log/chat.log',
+            '=== '.date('Y-m-d H:i:s')." ===\n".
+            'Content: '.$request->getContent()."\n",
+            FILE_APPEND
+        );
+
+        return new JsonResponse([
+            // 'debug' => true,
+            'message' => $message,
+            // 'server' => $_SERVER,
         ]);
     }
 
