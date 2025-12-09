@@ -7,8 +7,6 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -16,21 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AdminCrudController extends AbstractUserCrudController
 {
-    public function __construct(
-        TranslatorInterface $translator,
-        private UserPasswordHasherInterface $passwordEncoder
-    ) {
-        parent::__construct($translator);
-    }
-
     public function configureCrud(Crud $crud): Crud
     {
         $crud = parent::configureCrud($crud);
@@ -38,7 +24,7 @@ class AdminCrudController extends AbstractUserCrudController
         $title = $this->translator->trans('Admins', [], 'messages');
 
         return $crud
-            ->setEntityLabelInSingular($this->translator->trans('List of', [], 'messages').' '.$title)
+            ->setEntityLabelInSingular($this->translator->trans('', [], 'messages').' '.$title)
             ->setEntityLabelInPlural($this->translator->trans('List of', [], 'messages').' '.$title);
     }
 
@@ -90,27 +76,11 @@ class AdminCrudController extends AbstractUserCrudController
             ->setPermission(self::ROLE_ADMIN);
     }
 
-    public function createEditFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
+    public function createEntity(string $entityFqcn): User
     {
-        $plainPassword = '';
-        if (null !== $entityDto->getInstance()) {
-            $plainPassword = $entityDto->getInstance()->getPassword();
-        }
+        $user = new User();
+        $user->setRoles([self::ROLE_ADMIN]);
 
-        $formBuilder = parent::createEditFormBuilder($entityDto, $formOptions, $context);
-        $this->addEncodePasswordEventListener($formBuilder, $plainPassword);
-
-        return $formBuilder;
-    }
-
-    protected function addEncodePasswordEventListener(FormBuilderInterface $formBuilder, string $plainPassword = null): void
-    {
-        $formBuilder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($plainPassword) {
-            /** @var User $user */
-            $user = $event->getData();
-            if ($user->getPassword() !== $plainPassword) {
-                $user->setPassword($this->passwordEncoder->hashPassword($user, $user->getPassword()));
-            }
-        });
+        return $user;
     }
 }
