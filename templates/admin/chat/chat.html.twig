@@ -3,7 +3,13 @@
 {% block title %}Web chat{% endblock %}
 
 {% block body %}
-    <h2>Чат с клиентом: {{ session.phone }} ({{ session.name }})</h2>
+<div class="chat-container">
+
+    <div class="chat-header-admin">
+        <h2>Чат с клиентом: {{ session.phone }}</h2>
+        <h3>({{ session.name }})</h3>
+    </div>
+
 
     <div id="chat-window"
          style="height: 400px; overflow-y: auto; padding: 10px; border: 1px solid #ddd; background: #fff;">
@@ -20,7 +26,7 @@
 
     <form id="reply-form">
         <textarea name="text" class="form-control" rows="3" placeholder="Введите ответ..."></textarea>
-        <button class="btn btn-primary mt-2">Отправить</button>
+        <button class="btn btn-primary btn-primary-admin mt-2">Отправить</button>
     </form>
 
     <script>
@@ -79,4 +85,5 @@
         });
     </script>
 
+</div>
 {% endblock %}
