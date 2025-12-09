@@ -8,6 +8,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ClosedClientSessionCrudController extends AbstractClientSessionCrudController
 {
@@ -19,5 +22,16 @@ class ClosedClientSessionCrudController extends AbstractClientSessionCrudControl
             ->setParameter('closedStatus', ClientSessionStatus::CLOSED->value);
 
         return $qb;
+    }
+
+    public function configureFields(string $pageName): iterable
+    {
+        yield TelephoneField::new('phone');
+        yield TextField::new('name');
+        yield DateTimeField::new('createdAt')->setColumns('col-md-8')->setDisabled();
+        yield TextField::new('externalId')
+            ->setColumns('col-md-8')
+            ->setDisabled()
+            ->hideOnIndex();
     }
 }

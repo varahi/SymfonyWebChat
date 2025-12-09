@@ -38,6 +38,7 @@ class AbstractClientSessionCrudController extends AbstractCrudController
 
         yield CollectionField::new('messages')
             ->setFormTypeOption('entry_type', MessageFormType::class)
+            ->setFormTypeOption('disabled', true)
             ->hideOnIndex();
     }
 }
