@@ -59,24 +59,32 @@
       </trans-unit>
       <trans-unit id="29b7vEl" resname="Admins">
         <source>Admins</source>
-        <target>Операторы</target>
+        <target>Администраторы</target>
       </trans-unit>
       <trans-unit id="OOR9jZx" resname="ClientSession">
         <source>ClientSession</source>
         <target>Сессии</target>
       </trans-unit>
-        <trans-unit id="Phone" resname="Phone">
-            <source>Phone</source>
-            <target>Телефон</target>
-        </trans-unit>
-        <trans-unit id="Name" resname="Name">
-            <source>Name</source>
-            <target>Имя</target>
-        </trans-unit>
-        <trans-unit id="Created At" resname="Created At">
-            <source>Created At</source>
-            <target>Создано</target>
-        </trans-unit>
+      <trans-unit id="gZdyOsC" resname="Phone">
+        <source>Phone</source>
+        <target>Телефон</target>
+      </trans-unit>
+      <trans-unit id="wbMeKOh" resname="Name">
+        <source>Name</source>
+        <target>Имя</target>
+      </trans-unit>
+      <trans-unit id="Ey2epSG" resname="Created At">
+        <source>Created At</source>
+        <target>Создано</target>
+      </trans-unit>
+      <trans-unit id="pyekY7s" resname="List of">
+        <source>List of</source>
+        <target>Список</target>
+      </trans-unit>
+      <trans-unit id="VWx.X2c" resname="Operators">
+        <source>Operators</source>
+        <target>Операторы</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
