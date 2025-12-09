@@ -40,4 +40,23 @@ class HomeController extends AbstractController
             'sessionStatus' => $sessionStatus,
         ]);
     }
+
+    #[Route('/chat-embed', name: 'chat_embed')]
+    public function embed(): Response
+    {
+        $session = $this->chatService->getOrCreateClientSession();
+        $messages = $this->messageRepository->findMessagesForSession($session->getId());
+
+        $userId = $this->sessionService->getUserId();
+        $session = $this->doctrine
+            ->getRepository(ClientSession::class)
+            ->findOneBy(['externalId' => $userId]);
+
+        $sessionStatus = $session->getStatus();
+
+        return $this->render('page/embed.html.twig', [
+            'messages' => $messages,
+            'sessionStatus' => $sessionStatus,
+        ]);
+    }
 }
