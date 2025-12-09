@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\ClientSession;
+use App\Entity\Message;
 use App\Repository\MessageRepository;
 use App\Service\HistoryService;
-use App\Service\Interface\ChatBotServiceInterface;
 use App\Service\MessagePreparationService;
 use App\Service\OperatorChatService;
 use App\Service\SessionService;
@@ -28,6 +28,7 @@ class ApiController extends AbstractController
         private readonly OperatorChatService $chatService,
         private readonly MessageRepository $messageRepository,
         private readonly ManagerRegistry $doctrine,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -39,8 +40,7 @@ class ApiController extends AbstractController
         ]);
     }
 
-    #[Route('/chat', name: 'api_chat_no_slash', methods: ['POST', 'OPTIONS', 'GET'])]
-    #[Route('/chat/', name: 'api_chat_with_slash', methods: ['POST', 'OPTIONS', 'GET'])]
+    #[Route('/chat', name: 'api_chat', methods: ['POST', 'OPTIONS'])]
     public function chatSession(): JsonResponse
     {
         $session = $this->chatService->getOrCreateClientSession();
@@ -53,16 +53,95 @@ class ApiController extends AbstractController
 
         $sessionStatus = $sessionEntity->getStatus();
 
-        $messagesArray = array_map(fn($msg) => [
+        $messagesArray = array_map(fn ($msg) => [
             'id' => $msg->getId(),
             'role' => $msg->getRole(),
             'content' => $msg->getContent(),
-            'createdAt' => $msg->getCreatedAt()?->format('c')
+            'createdAt' => $msg->getCreatedAt()?->format('c'),
         ], $messages);
 
         return new JsonResponse([
             'sessionStatus' => $sessionStatus,
-            'messages' => $messagesArray
+            'messages' => $messagesArray,
+        ]);
+    }
+
+    #[Route('/chat_back', name: 'api_chat_back', methods: ['POST', 'OPTIONS'])]
+    public function chatSessionJsonBack(
+        Request $request
+    ): JsonResponse {
+        //        $this->logger->info('CHAT API HIT', [
+        //            'content' => $request->getContent()
+        //        ]);
+
+        //        $input = json_decode($request->getContent(), true) ?: [];
+        //
+        //        dd($input);
+
+        // CORS
+        //        $response = new JsonResponse();
+        //        $response->headers->set('Access-Control-Allow-Origin', '*');
+        //        $response->headers->set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        //        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
+        //
+        //        if ($request->getMethod() === 'OPTIONS') {
+        //            return $response;
+        //        }
+        //
+        //        $input = json_decode($request->getContent(), true) ?: [];
+        //        $userMessage = $input['message'] ?? '';
+        //
+        //        if (!$userMessage) {
+        //            return new JsonResponse(['error' => 'Empty message'], 400);
+        //        }
+        //
+        //        $session = $this->chatService->getOrCreateClientSession();
+        //        $messages = $this->messageRepository->findMessagesForSession($session->getId());
+        //
+        //        $messagesArray = array_map(fn($msg) => [
+        //            'id' => $msg->getId(),
+        //            'role' => $msg->getRole(),
+        //            'content' => $msg->getContent(),
+        //            'createdAt' => $msg->getCreatedAt()?->format('c')
+        //        ], $messages);
+        //
+        //        return new JsonResponse([
+        //           // 'response' => $botResponse,       // <-- виджет показывает пользователю
+        //            'messages' => $messagesArray,     // <-- оператор видит историю
+        //            'sessionStatus' => $session->getStatus(),
+        //        ]);
+
+        // Шаг 1. Создаём или получаем сессию (как в index)
+        $session = $this->chatService->getOrCreateClientSession();
+
+        // Шаг 2. Сообщения сессии
+        $messages = $this->messageRepository->findMessagesForSession($session->getId());
+
+        // Шаг 3. Повторно ищем сессию через externalId (как в index)
+        $userId = $this->sessionService->getUserId();
+
+        $session = $this->doctrine
+            ->getRepository(ClientSession::class)
+            ->findOneBy(['externalId' => $userId]);
+
+        //        if (!$session) {
+        //            return new JsonResponse(['error' => 'Session not found'], 404);
+        //        }
+
+        $sessionStatus = $session->getStatus();
+
+        // Шаг 4. Преобразуем сообщения
+        $messagesArray = array_map(fn ($msg) => [
+            'id' => $msg->getId(),
+            'role' => $msg->getRole(),
+            'content' => $msg->getContent(),
+            'createdAt' => $msg->getCreatedAt()?->format('c'),
+        ], $messages);
+
+        // Шаг 5. Возвращаем JSON
+        return new JsonResponse([
+            'sessionStatus' => $sessionStatus->value,
+            'messages' => $messagesArray,
         ]);
     }
 
