@@ -14,7 +14,8 @@ class FaqMenuProvider implements MenuProviderInterface
         yield MenuItem::subMenu('Faqs', 'fa fa-question-circle')
             ->setSubItems([
                 MenuItem::linkToCrud('Faq list', 'fa fa-question', Faq::class)
-                    ->setController(FaqCrudController::class),
+                    ->setController(FaqCrudController::class)
+                    ->setPermission('ROLE_ADMIN'),
             ]);
     }
 }

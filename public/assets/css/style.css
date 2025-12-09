@@ -192,3 +192,52 @@ body {
 #client-info-inline {
     padding: 8px 20px !important;
 }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 300px;
+    margin: 50px auto 0 auto;
+}
+
+.container label {
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+}
+
+.container input[type="text"],
+.container input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fafafa;
+    font-size: 14px;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.container input[type="text"]:focus,
+.container input[type="password"]:focus {
+    border-color: #4a77ff;
+    box-shadow: 0 0 0 3px rgba(74, 119, 255, 0.25);
+    outline: none;
+    background: #fff;
+}
+
+.container button {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #4a77ff;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.container button:hover {
+    background: #3a63d1;
+}
+

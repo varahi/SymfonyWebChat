@@ -14,7 +14,8 @@ class UserMenuProvider implements MenuProviderInterface
         yield MenuItem::subMenu('Users', 'fas fa-user')
             ->setSubItems([
                 MenuItem::linkToCrud('Admins', 'far fa-user', Message::class)
-                    ->setController(UserCrudController::class),
+                    ->setController(UserCrudController::class)
+                    ->setPermission('ROLE_ADMIN'),
             ]);
     }
 }

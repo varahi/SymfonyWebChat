@@ -43,16 +43,15 @@ class ApiController extends AbstractController
     #[Route('/chat', name: 'api_chat', methods: ['POST', 'OPTIONS'])]
     public function chatSession(
         Request $request
-    ): JsonResponse
-    {
+    ): JsonResponse {
         // JSON input
         $input = json_decode($request->getContent(), true) ?: [];
         $messageText = trim($input['message'] ?? '');
 
-        if ($messageText === '') {
+        if ('' === $messageText) {
             return $this->json([
                 'ok' => false,
-                'error' => 'Empty message'
+                'error' => 'Empty message',
             ], 400);
         }
 
@@ -65,7 +64,7 @@ class ApiController extends AbstractController
             ->getRepository(ClientSession::class)
             ->findOneBy(['externalId' => $userId]);
 
-        //$sessionStatus = $session->getStatus();
+        // $sessionStatus = $session->getStatus();
 
         // 5. Возвращаем JSON для виджета
         return $this->json([

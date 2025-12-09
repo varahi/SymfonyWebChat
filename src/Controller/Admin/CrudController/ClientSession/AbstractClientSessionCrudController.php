@@ -30,7 +30,7 @@ class AbstractClientSessionCrudController extends AbstractCrudController
         ;
     }
 
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_ADMIN or ROLE_EDITOR')]
     public function configureActions(Actions $actions): Actions
     {
         $openChat = Action::new('openChat', 'Открыть чат')
