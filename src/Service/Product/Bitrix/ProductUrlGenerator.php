@@ -65,7 +65,7 @@ class ProductUrlGenerator
         // return $this->baseUrl.'/catalog/'.$categoryPath.'/'.$productCode;
     }
 
-    private function getCategoryPath(int $sectionId): string
+    private function getCategoryPathWithRecursion(int $sectionId): string
     {
         try {
             $stmt = $this->pdo->prepare("
@@ -107,5 +107,29 @@ class ProductUrlGenerator
 
             return '';
         }
+    }
+
+    private function getCategoryPath(int $sectionId): string
+    {
+        $path = [];
+
+        while ($sectionId) {
+            $stmt = $this->pdo->prepare('
+            SELECT ID, CODE, IBLOCK_SECTION_ID
+            FROM b_iblock_section
+            WHERE ID = :id
+        ');
+            $stmt->execute(['id' => $sectionId]);
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$row) {
+                break;
+            }
+
+            array_unshift($path, $row['CODE']);
+            $sectionId = $row['IBLOCK_SECTION_ID'];
+        }
+
+        return implode('/', $path);
     }
 }
