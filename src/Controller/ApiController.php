@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api')]
 class ApiController extends AbstractController
@@ -168,7 +169,23 @@ class ApiController extends AbstractController
     public function closeSession(): JsonResponse
     {
         $userId = $this->sessionService->getUserId();
+
         $this->sessionService->closeSession($userId);
+
+        return new JsonResponse(null, 204);
+    }
+
+    // #[IsGranted('ROLE_ADMIN or ROLE_EDITOR')]
+    #[Route('/admin-close-session', name: 'app_admin_clear_session', methods: ['POST'])]
+    public function adminCloseSession(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $session = $data['session'] ?? null;
+
+        if (!$session) {
+            return new JsonResponse(['error' => 'Session ID missing'], 400);
+        }
+        $this->sessionService->closeSessionByAdmin($session);
 
         return new JsonResponse(null, 204);
     }

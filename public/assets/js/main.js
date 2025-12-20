@@ -13,6 +13,7 @@
             setClientData: '/api/session/set-client-data',
             openSession: '/api/open-session',
             closeSession: '/api/close-session',
+            adminCloseSession: '/api/admin-close-session',
             clearHistory: '/api/clear-history',
         },
         pollingIntervalMs: 3000,
@@ -80,10 +81,53 @@
         async closeSession() {
             return fetch(CONFIG.endpoints.closeSession, { method: 'POST' });
         },
+        async adminCloseSession() {
+            return fetch(CONFIG.endpoints.adminCloseSession, { method: 'POST' });
+        },
         async clearServerHistory() {
             return fetch(CONFIG.endpoints.clearHistory, { method: 'POST' });
         }
     };
+
+    /* -------------------------
+        Close session by admin
+    --------------------------*/
+    const adminBtns = h.qsa('.btn-primary-admin');
+
+    adminBtns.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const sessionId = btn.dataset.sessionId;
+            if (!sessionId) return;
+
+            if (!confirm('Вы уверены, что хотите завершить эту сессию?')) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Завершаем...';
+
+            try {
+                const res = await fetch(CONFIG.endpoints.adminCloseSession, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session: sessionId })
+                });
+
+                if (!res.ok) throw new Error('Ошибка сервера при завершении сессии');
+
+                // ✅ Динамически меняем состояние кнопки
+                btn.textContent = 'Завершено';
+                btn.disabled = true;
+                btn.dataset.sessionClosed = '1';
+                btn.style.background = '#6c757d'; // можно сменить цвет, чтобы визуально показать, что завершено
+
+            } catch (err) {
+                console.error(err);
+                alert(err.message || 'Не удалось завершить сессию');
+                btn.disabled = false;
+                btn.textContent = 'Завершить связь';
+            }
+        });
+    });
+
 
     /* -------------------------
        History manager (localStorage)

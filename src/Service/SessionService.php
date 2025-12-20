@@ -61,6 +61,22 @@ class SessionService
         ]);
     }
 
+    public function closeSessionByAdmin(string $sessionId): void
+    {
+        $em = $this->doctrine->getManager();
+        $session = $em->getRepository(ClientSession::class)
+            ->findOneBy(['id' => $sessionId]);
+
+        if (!$session) {
+            return;
+        }
+        $session->setClosedAt(new \DateTimeImmutable());
+        $session->setStatus(ClientSessionStatus::CLOSED);
+        $em->flush();
+
+        $this->removePhpSession();
+    }
+
     public function closeSession(string $sessionId): void
     {
         $em = $this->doctrine->getManager();

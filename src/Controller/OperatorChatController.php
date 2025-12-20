@@ -7,6 +7,7 @@ use App\Entity\Message;
 use App\Enum\MessageRole;
 use App\Enum\MessageStatus;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,12 +17,24 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin/client-session')]
 class OperatorChatController extends AbstractController
 {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+    ) {
+    }
+
     #[Route('/{id}/chat', name: 'admin_chat', methods: ['GET'])]
     public function chat(ClientSession $session): Response
     {
+        $sessionStatus = $session->getStatus();
+
+        $this->logger->warning('Get session by admin for chat', [
+            'session' => $session->getId(),
+        ]);
+
         return $this->render('admin/chat/chat.html.twig', [
             'session' => $session,
             'messages' => $session->getMessages(),
+            'sessionStatus' => $sessionStatus,
         ]);
     }
 

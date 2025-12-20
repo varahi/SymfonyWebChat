@@ -29,6 +29,25 @@
         <button class="btn btn-primary btn-primary-admin mt-2">Отправить</button>
     </form>
 
+    <div style="max-width: 200px;">
+        {% if sessionStatus.value == 'closed' %}
+            <button id="session-btn-admin-{{ session.id }}"
+                    disabled="disabled"
+                    class="btn btn-primary btn-primary-admin mt-2"
+                    style="background:#6c757d;">
+                Завершено
+            </button>
+        {% else %}
+            <button id="session-btn-admin-{{ session.id }}"
+                    class="btn btn-primary btn-primary-admin mt-2"
+                    style="background:#ff6b6b;"
+                    data-session-id="{{ session.id }}"
+                    data-session-closed="{{ sessionStatus.value == 'closed' ? '1' : '0' }}">
+                    Завершить связь
+            </button>
+        {% endif %}
+    </div>
+
     <script>
         const chatWindow = document.getElementById('chat-window');
         chatWindow.scrollTop = chatWindow.scrollHeight;
