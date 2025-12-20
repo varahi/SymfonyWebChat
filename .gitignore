@@ -37,3 +37,4 @@ tests/
 
 !public/assets/js/
 !public/assets/css/
+/config/reference.php

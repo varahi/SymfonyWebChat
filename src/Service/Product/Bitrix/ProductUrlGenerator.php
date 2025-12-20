@@ -3,12 +3,14 @@
 namespace App\Service\Product\Bitrix;
 
 use App\Database\PDOConnection;
+use Psr\Log\LoggerInterface;
 
 class ProductUrlGenerator
 {
     private \PDO $pdo;
 
     public function __construct(
+        private LoggerInterface $logger,
         private readonly string $baseUrl,
     ) {
         $this->pdo = PDOConnection::getInstance();
@@ -16,22 +18,51 @@ class ProductUrlGenerator
 
     public function generateProductUrl(array $product): string
     {
+        $this->logger->info('Generate product URL: start', [
+            'product_id' => $product['ID'] ?? null,
+            'section_id' => $product['IBLOCK_SECTION_ID'] ?? null,
+            'code' => $product['CODE'] ?? null,
+        ]);
+
         $productId = $product['ID'] ?? 0;
         $sectionId = $product['IBLOCK_SECTION_ID'] ?? 0;
 
         if (!$productId || !$sectionId) {
+            $this->logger->warning('Generate product URL: fallback (no productId or sectionId)', [
+                'product' => $product,
+            ]);
+
             return $this->baseUrl.'/catalog/';
         }
 
         // Получаем полный путь категорий
         $categoryPath = $this->getCategoryPath($sectionId);
+
+        $this->logger->info('Category path resolved', [
+            'section_id' => $sectionId,
+            'category_path' => $categoryPath,
+        ]);
+
         $productCode = $product['CODE'] ?? '';
 
         if (empty($categoryPath) || empty($productCode)) {
+            $this->logger->warning('Generate product URL: fallback (empty path or code)', [
+                'category_path' => $categoryPath,
+                'product_code' => $productCode,
+                'product' => $product,
+            ]);
+
             return $this->baseUrl.'/catalog/';
         }
 
-        return $this->baseUrl.'/catalog/'.$categoryPath.'/'.$productCode;
+        $url = $this->baseUrl.'/catalog/'.$categoryPath.'/'.$productCode;
+        $this->logger->info('Generate product URL: success', [
+            'url' => $url,
+        ]);
+
+        return $url;
+
+        // return $this->baseUrl.'/catalog/'.$categoryPath.'/'.$productCode;
     }
 
     private function getCategoryPath(int $sectionId): string
