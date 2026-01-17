@@ -506,8 +506,16 @@
 
         try {
             const resp = await Api.sendMessage(text);
-            if (resp && resp.response) UI.displayMessage('bot', resp.response);
-            else UI.displayMessage('bot', 'Ответ пуст или ошибка сервера');
+            // if (resp && resp.response) UI.displayMessage('bot', resp.response);
+            // else UI.displayMessage('bot', 'Ответ пуст или ошибка сервера');
+
+            if (!resp || !('response' in resp)) {
+                UI.displayMessage('bot', 'Ответ пуст или ошибка сервера');
+            } else if (resp.response) {
+                // есть текст — показываем
+                UI.displayMessage('bot', resp.response);
+            }
+
         } catch (e) {
             console.error('Send message error', e);
             UI.displayMessage('bot', '⚠️ Ошибка соединения');

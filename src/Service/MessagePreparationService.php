@@ -27,7 +27,8 @@ class MessagePreparationService
 
             return [[
                 'role' => MessageRole::OPERATOR->value,
-                'text' => '<div class="system-note">✅ Сообщение отправлено оператору.</div>',
+                //'text' => '<div class="system-note">✅ Сообщение отправлено оператору.</div>',
+                'text' => '',
             ]];
         }
 
