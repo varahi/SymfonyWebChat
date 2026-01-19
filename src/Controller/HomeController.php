@@ -10,6 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
@@ -19,38 +20,39 @@ class HomeController extends AbstractController
         private MessageRepository $messageRepository,
         private readonly SessionService $sessionService,
         private readonly ManagerRegistry $doctrine,
+        private readonly KernelInterface $kernel
     ) {
     }
 
     #[Route('/', name: 'app_home')]
     public function index(
     ): Response {
+        if ('prod' === $this->kernel->getEnvironment()) {
+            throw $this->createNotFoundException();
+        }
 
-        throw $this->createNotFoundException();
+        $session = $this->chatService->getOrCreateClientSession();
+        $messages = $this->messageRepository->findMessagesForSession($session->getId());
 
-//        $session = $this->chatService->getOrCreateClientSession();
-//        $messages = $this->messageRepository->findMessagesForSession($session->getId());
-//
-//        $userId = $this->sessionService->getUserId();
-//        $session = $this->doctrine
-//            ->getRepository(ClientSession::class)
-//            ->findOneBy(['externalId' => $userId]);
-//
-//        // $sessionClosed = null !== $session?->getClosedAt(); // bool
-//        $sessionStatus = $session->getStatus();
-//
-//        return $this->render('page/index.html.twig', [
-//            'messages' => $messages,
-//            'sessionStatus' => $sessionStatus,
-//        ]);
+        $userId = $this->sessionService->getUserId();
+        $session = $this->doctrine
+            ->getRepository(ClientSession::class)
+            ->findOneBy(['externalId' => $userId]);
+
+        // $sessionClosed = null !== $session?->getClosedAt(); // bool
+        $sessionStatus = $session->getStatus();
+
+        return $this->render('page/index.html.twig', [
+            'messages' => $messages,
+            'sessionStatus' => $sessionStatus,
+        ]);
     }
 
     #[Route('/chat-embed', name: 'chat_embed')]
     public function embed(
         Request $request,
-    ): Response
-    {
-        if ($request->headers->get('sec-fetch-dest') !== 'iframe') {
+    ): Response {
+        if ('iframe' !== $request->headers->get('sec-fetch-dest')) {
             return new Response('Forbidden', 403);
         }
 

@@ -28,7 +28,8 @@ class AbstractClientSessionCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        yield TelephoneField::new('phone');
+        // yield TelephoneField::new('phone');
+        yield TextField::new('phone');
         yield TextField::new('name');
         yield DateTimeField::new('createdAt')->setColumns('col-md-8')->setDisabled();
         yield TextField::new('externalId')
