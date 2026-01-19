@@ -204,6 +204,10 @@ class ApiController extends AbstractController
         $userId = $this->sessionService->getUserId();
         $this->sessionService->openSession($userId);
 
+        // ToDo: notification in admin panel for new client message
+        $session = $this->chatService->getOrCreateClientSession();
+        $this->chatService->storeClientMessage($session, 'Клиент вызывает оператора');
+
         return new JsonResponse(null, 204);
     }
 
