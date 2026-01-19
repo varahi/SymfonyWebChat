@@ -172,6 +172,10 @@
     const UI = (function () {
         const chatMessages = h.qs('#chat-messages');
         const sessionBtn = h.qs('#session-btn');
+        function scrollToBottom() {
+            if (!chatMessages) return;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
         function renderMessage(role, content) {
             const wrapper = h.el('div');
             wrapper.className = `message ${role}-message`;
@@ -202,9 +206,17 @@
             }
         }
 
+        // function loadHistoryToUi() {
+        //     chatMessages.innerHTML = '';
+        //     History.all().forEach(m => renderMessage(m.role, m.content));
+        // }
+
         function loadHistoryToUi() {
             chatMessages.innerHTML = '';
             History.all().forEach(m => renderMessage(m.role, m.content));
+
+            // 👇 ВАЖНО: прижимаем чат к низу при загрузке iframe
+            scrollToBottom();
         }
 
         function ensureClientInputsShown(prefill = {}) {
