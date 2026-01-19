@@ -173,6 +173,7 @@
         const chatMessages = h.qs('#chat-messages');
         const sessionBtn = h.qs('#session-btn');
         function scrollToBottom() {
+            //alert('asdasd');
             if (!chatMessages) return;
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }

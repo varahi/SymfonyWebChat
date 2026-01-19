@@ -8,6 +8,7 @@ use App\Service\OperatorChatService;
 use App\Service\SessionService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -24,26 +25,35 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(
     ): Response {
-        $session = $this->chatService->getOrCreateClientSession();
-        $messages = $this->messageRepository->findMessagesForSession($session->getId());
 
-        $userId = $this->sessionService->getUserId();
-        $session = $this->doctrine
-            ->getRepository(ClientSession::class)
-            ->findOneBy(['externalId' => $userId]);
+        throw $this->createNotFoundException();
 
-        // $sessionClosed = null !== $session?->getClosedAt(); // bool
-        $sessionStatus = $session->getStatus();
-
-        return $this->render('page/index.html.twig', [
-            'messages' => $messages,
-            'sessionStatus' => $sessionStatus,
-        ]);
+//        $session = $this->chatService->getOrCreateClientSession();
+//        $messages = $this->messageRepository->findMessagesForSession($session->getId());
+//
+//        $userId = $this->sessionService->getUserId();
+//        $session = $this->doctrine
+//            ->getRepository(ClientSession::class)
+//            ->findOneBy(['externalId' => $userId]);
+//
+//        // $sessionClosed = null !== $session?->getClosedAt(); // bool
+//        $sessionStatus = $session->getStatus();
+//
+//        return $this->render('page/index.html.twig', [
+//            'messages' => $messages,
+//            'sessionStatus' => $sessionStatus,
+//        ]);
     }
 
     #[Route('/chat-embed', name: 'chat_embed')]
-    public function embed(): Response
+    public function embed(
+        Request $request,
+    ): Response
     {
+        if ($request->headers->get('sec-fetch-dest') !== 'iframe') {
+            return new Response('Forbidden', 403);
+        }
+
         $session = $this->chatService->getOrCreateClientSession();
         $messages = $this->messageRepository->findMessagesForSession($session->getId());
 
