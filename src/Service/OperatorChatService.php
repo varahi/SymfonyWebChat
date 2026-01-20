@@ -124,4 +124,22 @@ class OperatorChatService
     //        $session->setClosedAt(new \DateTimeImmutable());
     //        $this->em->flush();
     //    }
+
+    public function pushOperatorMessage(string $sessionId, string $text): void
+    {
+        if (!isset($_SESSION['operator_messages'][$sessionId])) {
+            $_SESSION['operator_messages'][$sessionId] = [];
+        }
+
+        $_SESSION['operator_messages'][$sessionId][] = [
+            'text' => $text,
+            'ts' => time(),
+            'type' => 'system',
+        ];
+    }
+
+    public function getOperatorMessages(string $sessionId): array
+    {
+        return $_SESSION['operator_messages'][$sessionId] ?? [];
+    }
 }

@@ -37,9 +37,10 @@ class DashboardController extends AbstractDashboardController
 
     public function index(): Response
     {
-        $routeBuilder = $this->container->get(AdminUrlGenerator::class);
+        // $routeBuilder = $this->container->get(AdminUrlGenerator::class);
 
-        return $this->redirect($routeBuilder->setController(OpenedClientSessionCrudController::class)->generateUrl());
+        // return $this->redirect($routeBuilder->setController(OpenedClientSessionCrudController::class)->generateUrl());
+        return $this->render('admin/dashboard.html.twig');
     }
 
     public function configureDashboard(): Dashboard
@@ -54,6 +55,8 @@ class DashboardController extends AbstractDashboardController
     {
         yield from $this->mainMenuProvider->getMainMenu();
         yield from $this->faqMenuProvider->getItems();
+        //        yield MenuItem::linkToDashboard('Чат', 'fa fa-comments')
+        //            ->setBadge('NEW', 'danger');
         yield MenuItem::section('<hr />');
         // yield from $this->messageMenuProvider->getItems();
         yield from $this->clientSessionMenuProvider->getItems();

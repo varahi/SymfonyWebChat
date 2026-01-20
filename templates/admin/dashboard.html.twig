@@ -1,0 +1,96 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content %}
+
+    <h1 class="mb-4">Панель оператора</h1>
+    <div id="operator-notify-box" class="mb-4"></div>
+
+    <div class="card">
+        <div class="card-body">
+            <p class="mb-3">
+                Здесь отображаются новые подключения клиентов к оператору.
+            </p>
+
+            <a class="btn btn-primary"
+               href="{{ ea_url()
+                   .setController(
+                   'App\\Controller\\Admin\\CrudController\\ClientSession\\OpenedClientSessionCrudController'
+               )
+               }}">
+                Перейти к активным сессиям
+            </a>
+        </div>
+    </div>
+
+    {{ parent() }}
+    <script>
+        (function () {
+            async function pollOperatorNotify() {
+                try {
+                    const res = await fetch('{{ path('admin_operator_notifications') }}');
+                    if (!res.ok) return;
+
+                    const data = await res.json();
+                    const box = document.getElementById('operator-notify-box');
+                    if (!box) return;
+
+                    box.innerHTML = '';
+
+                    if (!data.notifications || data.notifications.length === 0) {
+                        return;
+                    }
+
+                    data.notifications.forEach(n => {
+                        const el = document.createElement('div');
+                        el.className = 'alert alert-warning alert-dismissible fade show';
+                        el.setAttribute('role', 'alert');
+                        el.textContent = n.text;
+
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'btn-close';
+                        btn.setAttribute('aria-label', 'Закрыть');
+                        btn.addEventListener('click', async () => {
+                            el.remove();
+                            // уведомляем сервер
+                            await fetch('{{ path('admin_operator_notification_remove') }}', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: new URLSearchParams({ text: n.text })
+                            });
+                        });
+
+                        el.appendChild(btn);
+                        box.appendChild(el);
+                    });
+                } catch (e) {
+                    console.error('Operator notify error', e);
+                }
+            }
+
+            pollOperatorNotify();
+            setInterval(pollOperatorNotify, 3000);
+        })();
+    </script>
+
+    <style>
+        .content-wrapper {
+            display: block;
+        }
+        #operator-notify-box {
+            max-width: 400px;
+        }
+        #operator-notify-box .alert {
+            position: relative;
+            padding-right: 2rem; /* место для кнопки закрытия */
+            margin-bottom: 5px;
+        }
+        #operator-notify-box .btn-close {
+            position: absolute;
+            top: 1.2rem;
+            right: 0.5rem;
+        }
+    </style>
+
+{% endblock %}
+

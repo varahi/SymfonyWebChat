@@ -8,6 +8,7 @@ use App\Repository\MessageRepository;
 use App\Service\HistoryService;
 use App\Service\MessagePreparationService;
 use App\Service\OperatorChatService;
+use App\Service\OperatorNotificationService;
 use App\Service\SessionService;
 use App\Service\TopicService;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,7 +32,8 @@ class ApiController extends AbstractController
         private readonly MessageRepository $messageRepository,
         private readonly ManagerRegistry $doctrine,
         private readonly LoggerInterface $logger,
-        private readonly KernelInterface $kernel
+        private readonly KernelInterface $kernel,
+        private readonly OperatorNotificationService $operatorNotificationService,
     ) {
     }
 
@@ -204,9 +206,20 @@ class ApiController extends AbstractController
         $userId = $this->sessionService->getUserId();
         $this->sessionService->openSession($userId);
 
-        // ToDo: notification in admin panel for new client message
+        // Send first init message for operator
         $session = $this->chatService->getOrCreateClientSession();
         $this->chatService->storeClientMessage($session, 'Клиент вызывает оператора');
+
+        // ToDo: notification in admin panel for new client message
+        $this->operatorNotificationService->add(
+            '🔔 Новый клиент вызывает оператора'
+        );
+
+        // ToDo: remove
+        //        $this->chatService->pushOperatorMessage(
+        //            $session->getId(),
+        //            'Клиент подключился к оператору'
+        //        );
 
         return new JsonResponse(null, 204);
     }
