@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/admin')]
 class NotificationController extends AbstractController
 {
     public function __construct(
@@ -15,7 +16,7 @@ class NotificationController extends AbstractController
     ) {
     }
 
-    #[Route('/admin/operator-notifications', name: 'admin_operator_notifications')]
+    #[Route('/operator-notifications', name: 'admin_operator_notifications')]
     public function operatorNotifications(): JsonResponse
     {
         return new JsonResponse([
@@ -23,21 +24,14 @@ class NotificationController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/operator-notifications/remove', name: 'admin_operator_notification_remove', methods: ['POST'])]
+    #[Route('/operator-notifications/remove', name: 'admin_operator_notification_remove', methods: ['POST'])]
     public function removeOperatorNotification(Request $request, OperatorNotificationService $notify): JsonResponse
     {
-        $text = $request->request->get('text');
-        if ($text) {
-            $notify->remove($text);
+        $ts = $request->request->getInt('ts');
+        if ($ts) {
+            $notify->removeByTs($ts);
         }
 
         return new JsonResponse(['success' => true]);
-
-        //        $ts = $request->request->getInt('ts');
-        //        if ($ts) {
-        //            $notify->removeByTs($ts);
-        //        }
-        //
-        //        return new JsonResponse(['success' => true]);
     }
 }

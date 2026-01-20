@@ -52,11 +52,11 @@
                         btn.setAttribute('aria-label', 'Закрыть');
                         btn.addEventListener('click', async () => {
                             el.remove();
-                            // уведомляем сервер
+                            // уведомляем сервер по уникальному ts
                             await fetch('{{ path('admin_operator_notification_remove') }}', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                body: new URLSearchParams({ text: n.text })
+                                body: new URLSearchParams({ ts: n.ts })
                             });
                         });
 
