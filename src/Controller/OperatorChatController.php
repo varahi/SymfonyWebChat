@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/admin/client-session')]
@@ -19,6 +20,7 @@ class OperatorChatController extends AbstractController
 {
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly KernelInterface $kernel,
     ) {
     }
 
@@ -27,9 +29,11 @@ class OperatorChatController extends AbstractController
     {
         $sessionStatus = $session->getStatus();
 
-        $this->logger->warning('Get session by admin for chat', [
-            'session' => $session->getId(),
-        ]);
+        if ('dev' === $this->kernel->getEnvironment()) {
+            $this->logger->warning('Get session by admin for chat', [
+                'session' => $session->getId(),
+            ]);
+        }
 
         return $this->render('admin/chat/chat.html.twig', [
             'session' => $session,
@@ -48,6 +52,12 @@ class OperatorChatController extends AbstractController
 
         if (!$text) {
             return new JsonResponse(['error' => 'Empty message'], 400);
+        }
+
+        if ('dev' === $this->kernel->getEnvironment()) {
+            $this->logger->warning('Get session by admin for chat', [
+                'session' => $session->getId(),
+            ]);
         }
 
         $message = new Message();

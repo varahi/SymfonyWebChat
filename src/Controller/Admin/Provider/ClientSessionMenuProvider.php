@@ -14,7 +14,7 @@ class ClientSessionMenuProvider implements MenuProviderInterface
     {
         yield MenuItem::subMenu('Client Sessions', 'fas fa-user-alt')
             ->setSubItems([
-                MenuItem::linkToCrud('Opened Session', 'fas fa-user', ClientSession::class)
+                MenuItem::linkToCrud('Opened Session', 'fas fa-comment', ClientSession::class)
                     ->setController(OpenedClientSessionCrudController::class),
 //
 //                MenuItem::linkToCrud('Closed Session', 'fas fa-user-circle', ClientSession::class)
