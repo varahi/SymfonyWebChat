@@ -7,6 +7,7 @@ use App\Enum\ClientSessionStatus;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Uid\Uuid;
 
 class SessionService
@@ -17,6 +18,7 @@ class SessionService
         private RequestStack $requestStack,
         private readonly ManagerRegistry $doctrine,
         private readonly LoggerInterface $logger,
+        private readonly KernelInterface $kernel,
     ) {
     }
 
@@ -88,6 +90,28 @@ class SessionService
         }
         $session->setClosedAt(new \DateTimeImmutable());
         $session->setStatus(ClientSessionStatus::CLOSED);
+        $em->flush();
+
+        $this->removePhpSession();
+    }
+
+    public function operatorStartedSession(string $sessionId): void
+    {
+        $em = $this->doctrine->getManager();
+        $session = $em->getRepository(ClientSession::class)
+            ->findOneBy(['id' => $sessionId]);
+
+        if (!$session) {
+            return;
+        }
+
+        if ('dev' === $this->kernel->getEnvironment()) {
+            $this->logger->warning('Get session by operatorStartedSession', [
+                'session' => $session->getId(),
+            ]);
+        }
+
+        $session->setStatus(ClientSessionStatus::OPERATOR_STARTED);
         $em->flush();
 
         $this->removePhpSession();

@@ -6,6 +6,7 @@ use App\Entity\ClientSession;
 use App\Entity\Message;
 use App\Enum\MessageRole;
 use App\Enum\MessageStatus;
+use App\Service\SessionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,7 @@ class OperatorChatController extends AbstractController
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly KernelInterface $kernel,
+        private readonly SessionService $sessionService,
     ) {
     }
 
@@ -29,11 +31,11 @@ class OperatorChatController extends AbstractController
     {
         $sessionStatus = $session->getStatus();
 
-        if ('dev' === $this->kernel->getEnvironment()) {
-            $this->logger->warning('Get session by admin for chat', [
-                'session' => $session->getId(),
-            ]);
-        }
+        //        if ('dev' === $this->kernel->getEnvironment()) {
+        //            $this->logger->warning('Get session by method admin_chat', [
+        //                'session' => $session->getId(),
+        //            ]);
+        //        }
 
         return $this->render('admin/chat/chat.html.twig', [
             'session' => $session,
@@ -55,10 +57,12 @@ class OperatorChatController extends AbstractController
         }
 
         if ('dev' === $this->kernel->getEnvironment()) {
-            $this->logger->warning('Get session by admin for chat', [
+            $this->logger->warning('Get session by method admin_chat_reply', [
                 'session' => $session->getId(),
             ]);
         }
+
+        $this->sessionService->operatorStartedSession($session->getId());
 
         $message = new Message();
         $message->setClientSession($session);
