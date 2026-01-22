@@ -19,10 +19,11 @@ class OpenedClientSessionCrudController extends AbstractClientSessionCrudControl
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        $qb->andWhere('entity.status = :status')
-            ->setParameter('status', ClientSessionStatus::OPENED->value)
-            ->orWhere('entity.status = :status')
-            ->setParameter('status', ClientSessionStatus::OPERATOR_STARTED->value);
+        $qb->andWhere('entity.status IN (:statuses)')
+            ->setParameter('statuses', [
+                ClientSessionStatus::OPENED->value,
+                ClientSessionStatus::OPERATOR_STARTED->value,
+            ]);
 
         return $qb;
     }

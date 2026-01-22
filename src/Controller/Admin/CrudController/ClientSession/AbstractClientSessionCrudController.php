@@ -3,9 +3,11 @@
 namespace App\Controller\Admin\CrudController\ClientSession;
 
 use App\Entity\ClientSession;
+use App\Enum\ClientSessionStatus;
 use App\Form\Crud\MessageFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
@@ -31,6 +33,20 @@ class AbstractClientSessionCrudController extends AbstractCrudController
         // yield TelephoneField::new('phone');
         yield TextField::new('phone');
         yield TextField::new('name');
+
+        yield ChoiceField::new('status')
+            ->setChoices([
+                'Открыта' => ClientSessionStatus::OPENED,
+                'Оператор подключился' => ClientSessionStatus::OPERATOR_STARTED,
+                'Закрыта' => ClientSessionStatus::CLOSED,
+            ])
+            ->renderAsBadges([
+                ClientSessionStatus::OPENED->value => 'warning',
+                ClientSessionStatus::OPERATOR_STARTED->value => 'info',
+                ClientSessionStatus::CLOSED->value => 'secondary',
+            ])
+            ->setDisabled();
+
         yield DateTimeField::new('createdAt')->setColumns('col-md-8')->setDisabled();
         yield TextField::new('externalId')
             ->setColumns('col-md-8')
