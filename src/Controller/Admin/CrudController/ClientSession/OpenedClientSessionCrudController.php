@@ -85,6 +85,7 @@ class OpenedClientSessionCrudController extends AbstractClientSessionCrudControl
             ]);
 
         return $actions
-            ->add(Crud::PAGE_INDEX, $openChat);
+            ->add(Crud::PAGE_INDEX, $openChat)
+            ->disable('new');
     }
 }

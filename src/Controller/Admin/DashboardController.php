@@ -58,7 +58,7 @@ class DashboardController extends AbstractDashboardController
             ->renderContentMaximized()
             // ->setTranslationDomain('my-custom-domain')
             ->setDefaultColorScheme('light')
-            ->setLocales(['ru', 'en'])
+            // ->setLocales(['ru', 'en'])
         ;
     }
 
@@ -66,8 +66,8 @@ class DashboardController extends AbstractDashboardController
     {
         yield from $this->mainMenuProvider->getMainMenu();
         yield from $this->faqMenuProvider->getItems();
-        //        yield MenuItem::linkToDashboard('Чат', 'fa fa-comments')
-        //            ->setBadge('NEW', 'danger');
+        //                yield MenuItem::linkToDashboard('Чат', 'fa fa-comments')
+        //                    ->setBadge('NEW', 'danger');
         yield MenuItem::section('<hr />');
         // yield from $this->messageMenuProvider->getItems();
         yield from $this->clientSessionMenuProvider->getItems();
@@ -82,7 +82,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Profile', 'fa fa-tags', User::class)
                 ->setAction('edit')
                 ->setEntityId($user->getId()),
-            MenuItem::linkToLogout('Logout', 'fa-sign-out'),
+            MenuItem::linkToLogout('Logout', 'fa fa-sign-out'),
         ];
 
         return UserMenu::new()

@@ -89,10 +89,18 @@
         <source>Status</source>
         <target>Статус</target>
       </trans-unit>
-        <trans-unit id="Web Chat Panel" resname="Web Chat Panel">
-            <source>Web Chat Panel</source>
-            <target>Панель управления чатом</target>
-        </trans-unit>
+      <trans-unit id="DNyf7hM" resname="Web Chat Panel">
+        <source>Web Chat Panel</source>
+        <target>Панель управления чатом</target>
+      </trans-unit>
+      <trans-unit id="5Y34z39" resname="Profile">
+        <source>Profile</source>
+        <target>Профиль</target>
+      </trans-unit>
+      <trans-unit id="JKl2Twv" resname="Logout">
+        <source>Logout</source>
+        <target>Выйти</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

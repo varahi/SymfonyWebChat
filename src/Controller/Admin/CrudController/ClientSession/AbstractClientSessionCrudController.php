@@ -18,12 +18,12 @@ class AbstractClientSessionCrudController extends AbstractCrudController
         return ClientSession::class;
     }
 
-    public function configureFilters(Filters $filters): Filters
-    {
-        return $filters
-            ->add(EntityFilter::new('messages'))
-        ;
-    }
+    //    public function configureFilters(Filters $filters): Filters
+    //    {
+    //        return $filters
+    //            ->add(EntityFilter::new('messages'))
+    //        ;
+    //    }
 
     public function configureFields(string $pageName): iterable
     {
