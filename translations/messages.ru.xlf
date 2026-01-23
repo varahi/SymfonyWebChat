@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="ru" target-language="ru" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="wM2gChe" resname="status.opened">
+        <source>status.opened</source>
+        <target>Открыта</target>
+      </trans-unit>
+      <trans-unit id="TKrGtOL" resname="status.operator_started">
+        <source>status.operator_started</source>
+        <target>Оператор подключился</target>
+      </trans-unit>
+      <trans-unit id="eQUmx3y" resname="status.closed">
+        <source>status.closed</source>
+        <target>Закрыта</target>
+      </trans-unit>
+      <trans-unit id="maoG0wF" resname="">
+        <source></source>
+        <target>__</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

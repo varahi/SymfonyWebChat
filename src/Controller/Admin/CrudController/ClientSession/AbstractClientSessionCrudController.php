@@ -36,9 +36,9 @@ class AbstractClientSessionCrudController extends AbstractCrudController
 
         yield ChoiceField::new('status')
             ->setChoices([
-                'Открыта' => ClientSessionStatus::OPENED,
-                'Оператор подключился' => ClientSessionStatus::OPERATOR_STARTED,
-                'Закрыта' => ClientSessionStatus::CLOSED,
+                'Открыта' => ClientSessionStatus::OPENED->value,
+                'Оператор подключился' => ClientSessionStatus::OPERATOR_STARTED->value,
+                'Закрыта' => ClientSessionStatus::CLOSED->value,
             ])
             ->renderAsBadges([
                 ClientSessionStatus::OPENED->value => 'warning',

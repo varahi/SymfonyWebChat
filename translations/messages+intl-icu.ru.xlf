@@ -85,6 +85,10 @@
         <source>Operators</source>
         <target>Операторы</target>
       </trans-unit>
+      <trans-unit id="6xCSWiZ" resname="Status">
+        <source>Status</source>
+        <target>Статус</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

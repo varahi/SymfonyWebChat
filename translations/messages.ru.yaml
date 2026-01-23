@@ -1,0 +1,4 @@
+status:
+    opened: 'Открыта'
+    operator_started: 'Оператор подключился'
+    closed: 'Закрыта'
