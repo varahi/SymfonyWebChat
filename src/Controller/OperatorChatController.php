@@ -31,11 +31,11 @@ class OperatorChatController extends AbstractController
     {
         $sessionStatus = $session->getStatus();
 
-        //        if ('dev' === $this->kernel->getEnvironment()) {
-        //            $this->logger->warning('Get session by method admin_chat', [
-        //                'session' => $session->getId(),
-        //            ]);
-        //        }
+        if ('dev' === $this->kernel->getEnvironment()) {
+            $this->logger->warning('Get session by method admin_chat', [
+                'session' => $session->getId(),
+            ]);
+        }
 
         return $this->render('admin/chat/chat.html.twig', [
             'session' => $session,

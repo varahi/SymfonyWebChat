@@ -1,0 +1,25 @@
+{% set status = entity.instance.status.value %}
+{% set label = {
+    'opened': 'Принять чат',
+    'operator_started': 'Открыть',
+    'closed': 'Закрыт'
+}[status] ?? 'Чат' %}
+
+{% set btnClass = {
+    'opened': 'btn-warning',
+    'operator_started': 'btn-info',
+    'closed': 'btn-secondary'
+}[status] ?? 'btn-primary' %}
+
+<a class="btn btn-sm {{ btnClass }}"
+   target="_blank"
+   href="/admin/client-session/{{ entity.instance.id }}/chat">
+    <i class="fa fa-comments"></i>
+    {{ label }}
+</a>
+
+<style>
+    .searchable .btn {
+        padding: 2px 10px;
+    }
+</style>
