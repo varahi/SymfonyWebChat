@@ -89,6 +89,10 @@
         <source>Status</source>
         <target>Статус</target>
       </trans-unit>
+        <trans-unit id="Web Chat Panel" resname="Web Chat Panel">
+            <source>Web Chat Panel</source>
+            <target>Панель управления чатом</target>
+        </trans-unit>
     </body>
   </file>
 </xliff>

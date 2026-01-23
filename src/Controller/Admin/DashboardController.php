@@ -11,6 +11,7 @@ use App\Controller\Admin\Provider\UserMenuProvider;
 use App\Entity\User;
 use App\Service\Interface\UserServiceInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
@@ -37,17 +38,27 @@ class DashboardController extends AbstractDashboardController
 
     public function index(): Response
     {
-        // $routeBuilder = $this->container->get(AdminUrlGenerator::class);
+        $routeBuilder = $this->container->get(AdminUrlGenerator::class);
 
-        // return $this->redirect($routeBuilder->setController(OpenedClientSessionCrudController::class)->generateUrl());
-        return $this->render('admin/dashboard.html.twig');
+        return $this->redirect($routeBuilder->setController(OpenedClientSessionCrudController::class)->generateUrl());
+
+        // return $this->render('admin/dashboard.html.twig');
+    }
+
+    public function configureCrud(): Crud
+    {
+        return Crud::new()
+            ->overrideTemplate('layout', 'admin/layout.html.twig');
     }
 
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Web Chat Panel')
+            ->setTitle('Панель чата')
             ->renderContentMaximized()
+            // ->setTranslationDomain('my-custom-domain')
+            ->setDefaultColorScheme('light')
+            ->setLocales(['ru', 'en'])
         ;
     }
 
