@@ -13,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -41,7 +40,7 @@ class ClosedClientSessionCrudController extends AbstractClientSessionCrudControl
 
     public function configureFields(string $pageName): iterable
     {
-        yield TelephoneField::new('phone');
+        yield TextField::new('phone');
         yield TextField::new('name');
         yield DateTimeField::new('createdAt')->setColumns('col-md-8')->setDisabled();
         yield TextField::new('externalId')

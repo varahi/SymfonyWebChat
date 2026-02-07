@@ -55,7 +55,7 @@
       </trans-unit>
       <trans-unit id="5bLQ0DE" resname="Closed Sessions">
         <source>Closed Sessions</source>
-        <target>Закрытая сессии</target>
+        <target>Закрытые сессии</target>
       </trans-unit>
       <trans-unit id="BCGjfox" resname="Users">
         <source>Users</source>

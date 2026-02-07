@@ -146,10 +146,13 @@ class SessionService
             return false;
         }
 
-        if (ClientSessionStatus::OPENED !== $session->getStatus()) {
-            return false;
-        }
-
-        return true;
+        return in_array(
+            $session->getStatus(),
+            [
+                ClientSessionStatus::OPERATOR_STARTED,
+                ClientSessionStatus::OPENED,
+            ],
+            true
+        );
     }
 }

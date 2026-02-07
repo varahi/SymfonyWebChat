@@ -4,6 +4,8 @@ namespace App\Service;
 
 use App\Enum\MessageRole;
 use App\Service\Product\ProductService;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class MessagePreparationService
 {
@@ -12,7 +14,9 @@ class MessagePreparationService
         private readonly HistoryService $historyService,
         private readonly ProductService $productService,
         private readonly SessionService $sessionService,
-        private readonly OperatorChatService $chatService
+        private readonly OperatorChatService $chatService,
+        private readonly LoggerInterface $logger,
+        private readonly KernelInterface $kernel,
     ) {
     }
 
@@ -22,7 +26,17 @@ class MessagePreparationService
         $userId = $this->sessionService->getUserId();
 
         // 0. Если сессия с оператором уже активна — все запросы идут оператору
-        if ($this->sessionService->isOperatorSession($session, $userId)) {
+        $isOperatorSession = $this->sessionService->isOperatorSession($session, $userId);
+
+        if ('dev' === $this->kernel->getEnvironment()) {
+            $this->logger->warning('Is operator session', [
+                'value' => $isOperatorSession,
+                'session_status' => $session->getStatus(),
+                'external_id' => $session->getExternalId(),
+                'user_id' => $userId,
+            ]);
+        }
+        if ($isOperatorSession) {
             $this->chatService->storeClientMessage($session, $userMessage);
 
             return [[
