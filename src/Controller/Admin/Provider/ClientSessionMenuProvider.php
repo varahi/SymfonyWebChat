@@ -16,9 +16,9 @@ class ClientSessionMenuProvider implements MenuProviderInterface
             ->setSubItems([
                 MenuItem::linkToCrud('Opened Session', 'fas fa-comment', ClientSession::class)
                     ->setController(OpenedClientSessionCrudController::class),
-//
-//                MenuItem::linkToCrud('Closed Session', 'fas fa-user-circle', ClientSession::class)
-//                    ->setController(ClosedClientSessionCrudController::class),
+
+                MenuItem::linkToCrud('Closed Chats', 'fas fa-user-circle', ClientSession::class)
+                    ->setController(ClosedClientSessionCrudController::class),
             ]);
     }
 }

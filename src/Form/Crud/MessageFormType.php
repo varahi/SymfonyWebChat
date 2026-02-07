@@ -22,15 +22,17 @@ class MessageFormType extends AbstractType
                     'class' => 'form-control',
                     'placeholder' => 'Сообщение',
                 ],
+                'label' => 'Message',
+                'translation_domain' => 'messages',
             ])
-            ->add('status', EnumType::class, [
-                'disabled' => true,
-                'class' => MessageStatus::class,
-                'choice_label' => function (MessageStatus $status) {
-                    return $status->value;
-                },
-                'attr' => ['class' => 'form-select'],
-            ])
+//            ->add('status', EnumType::class, [
+//                'disabled' => true,
+//                'class' => MessageStatus::class,
+//                'choice_label' => function (MessageStatus $status) {
+//                    return $status->value;
+//                },
+//                'attr' => ['class' => 'form-select'],
+//            ])
             ->add('createdAt', DateTimeType::class, [
                 'disabled' => true,
                 'widget' => 'single_text',
@@ -38,6 +40,8 @@ class MessageFormType extends AbstractType
                 'attr' => [
                     'class' => 'form-control datetimepicker',
                 ],
+                'label' => 'CreatedAt',
+                'translation_domain' => 'messages',
             ])
         ;
     }

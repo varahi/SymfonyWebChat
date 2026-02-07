@@ -21,6 +21,22 @@
         <source></source>
         <target>__</target>
       </trans-unit>
+      <trans-unit id="vtsk56f" resname="Message">
+        <source>Message</source>
+        <target>Сообщение</target>
+      </trans-unit>
+      <trans-unit id="1Z8uBHi" resname="Messages">
+        <source>Messages</source>
+        <target>Сообщения</target>
+      </trans-unit>
+      <trans-unit id="mDB.m4N" resname="CreatedAt">
+        <source>CreatedAt</source>
+        <target>Создано</target>
+      </trans-unit>
+      <trans-unit id="oXPNGYK" resname="Session id">
+        <source>Session id</source>
+        <target>ID Сессии</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

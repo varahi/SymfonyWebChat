@@ -51,7 +51,11 @@
       </trans-unit>
       <trans-unit id="m54T4Xj" resname="Closed Session">
         <source>Closed Session</source>
-        <target>Сессии без оператора</target>
+        <target>Закрытая сессия</target>
+      </trans-unit>
+      <trans-unit id="5bLQ0DE" resname="Closed Sessions">
+        <source>Closed Sessions</source>
+        <target>Закрытая сессии</target>
       </trans-unit>
       <trans-unit id="BCGjfox" resname="Users">
         <source>Users</source>
@@ -100,6 +104,10 @@
       <trans-unit id="JKl2Twv" resname="Logout">
         <source>Logout</source>
         <target>Выйти</target>
+      </trans-unit>
+      <trans-unit id="EWd5him" resname="Closed Chats">
+        <source>Closed Chats</source>
+        <target>Завершенные чаты</target>
       </trans-unit>
     </body>
   </file>

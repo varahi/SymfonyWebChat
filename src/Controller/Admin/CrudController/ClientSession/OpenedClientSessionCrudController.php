@@ -2,13 +2,11 @@
 
 namespace App\Controller\Admin\CrudController\ClientSession;
 
-use App\Entity\ClientSession;
 use App\Enum\ClientSessionStatus;
 use App\Form\Crud\MessageFormType;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -39,18 +37,18 @@ class OpenedClientSessionCrudController extends AbstractClientSessionCrudControl
         yield TextField::new('phone');
         yield TextField::new('name');
 
-        yield ChoiceField::new('status')
-            ->setChoices([
-                'Открыта' => ClientSessionStatus::OPENED->value,
-                'Оператор подключился' => ClientSessionStatus::OPERATOR_STARTED->value,
-                'Закрыта' => ClientSessionStatus::CLOSED->value,
-            ])
-            ->renderAsBadges([
-                ClientSessionStatus::OPENED->value => 'warning',
-                ClientSessionStatus::OPERATOR_STARTED->value => 'info',
-                ClientSessionStatus::CLOSED->value => 'secondary',
-            ])
-            ->setDisabled();
+        //        yield ChoiceField::new('status')
+        //            ->setChoices([
+        //                'Открыта' => ClientSessionStatus::OPENED->value,
+        //                'Оператор подключился' => ClientSessionStatus::OPERATOR_STARTED->value,
+        //                'Закрыта' => ClientSessionStatus::CLOSED->value,
+        //            ])
+        //            ->renderAsBadges([
+        //                ClientSessionStatus::OPENED->value => 'warning',
+        //                ClientSessionStatus::OPERATOR_STARTED->value => 'info',
+        //                ClientSessionStatus::CLOSED->value => 'secondary',
+        //            ])
+        //            ->setDisabled();
 
         yield DateTimeField::new('createdAt')->setColumns('col-md-8')->setDisabled();
 
@@ -60,11 +58,13 @@ class OpenedClientSessionCrudController extends AbstractClientSessionCrudControl
             ->setTemplatePath('admin/field/open_chat_button.html.twig');
 
         yield TextField::new('externalId')
+            ->setLabel('Session id')
             ->setColumns('col-md-8')
             ->setDisabled()
             ->hideOnIndex();
 
         yield CollectionField::new('messages')
+            ->setLabel('Messages')
             ->setFormTypeOption('entry_type', MessageFormType::class)
             ->setFormTypeOption('disabled', true)
             ->hideOnIndex();
@@ -73,19 +73,13 @@ class OpenedClientSessionCrudController extends AbstractClientSessionCrudControl
     #[IsGranted('ROLE_ADMIN or ROLE_EDITOR')]
     public function configureActions(Actions $actions): Actions
     {
-        $openChat = Action::new('openChat', 'Открыть чат')
-            ->setIcon('fas fa-comment')
-            ->linkToUrl(function (ClientSession $session) {
-                return '/admin/client-session/'.$session->getId().'/chat';
-            })
-            ->setCssClass('btn btn-primary')
-            ->setHtmlAttributes([
-                'target' => '_blank',
-                'rel' => 'noopener noreferrer',
-            ]);
-
-        return $actions
-            ->add(Crud::PAGE_INDEX, $openChat)
-            ->disable('new');
+        return
+            $actions
+                ->add(CRUD::PAGE_INDEX, 'detail')
+                ->disable('new')
+                ->disable('edit')
+                ->disable('detail')
+                ->disable('delete')
+        ;
     }
 }
