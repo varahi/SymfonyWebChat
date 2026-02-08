@@ -14,10 +14,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ClosedClientSessionCrudController extends AbstractClientSessionCrudController
 {
+    public function __construct(
+        private Security $security
+    ) {
+    }
+
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -63,11 +69,16 @@ class ClosedClientSessionCrudController extends AbstractClientSessionCrudControl
     #[IsGranted('ROLE_ADMIN or ROLE_EDITOR')]
     public function configureActions(Actions $actions): Actions
     {
-        return
-            $actions
+        $actions = $actions
                 ->add(CRUD::PAGE_INDEX, 'detail')
                 ->disable('new')
-                ->disable('delete')
         ;
+
+        // запрещаем delete только для Editor
+        if ($this->security->isGranted('ROLE_EDITOR')) {
+            $actions = $actions->disable('delete');
+        }
+
+        return $actions;
     }
 }
