@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin\Provider;
 
+use App\Controller\Admin\CrudController\ClientSession\AllSessionCrudController;
 use App\Controller\Admin\CrudController\ClientSession\ClosedClientSessionCrudController;
 use App\Controller\Admin\CrudController\ClientSession\OpenedClientSessionCrudController;
 use App\Controller\Admin\Provider\Interface\MenuProviderInterface;
@@ -19,6 +20,9 @@ class ClientSessionMenuProvider implements MenuProviderInterface
 
                 MenuItem::linkToCrud('Closed Chats', 'fas fa-user-circle', ClientSession::class)
                     ->setController(ClosedClientSessionCrudController::class),
+
+                MenuItem::linkToCrud('All Sessions', 'fas fa-user-circle', ClientSession::class)
+                    ->setController(AllSessionCrudController::class),
             ]);
     }
 }

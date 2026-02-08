@@ -76,7 +76,7 @@ class SessionService
         $session->setStatus(ClientSessionStatus::CLOSED);
         $em->flush();
 
-        //$this->removePhpSession();
+        // $this->removePhpSession();
     }
 
     public function closeSession(string $sessionId): void

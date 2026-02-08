@@ -37,6 +37,14 @@
         <source>Session id</source>
         <target>ID Сессии</target>
       </trans-unit>
+      <trans-unit id="cOU_.Jt" resname="All Sessions">
+        <source>All Sessions</source>
+        <target>Все Сессии</target>
+      </trans-unit>
+      <trans-unit id="vq4cbRd" resname="Session">
+        <source>Session</source>
+        <target>Сессия</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

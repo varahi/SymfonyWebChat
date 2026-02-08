@@ -1,22 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin\CrudController\ClientSession;
 
-use App\Enum\ClientSessionStatus;
 use App\Form\Crud\MessageFormType;
-use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class ClosedClientSessionCrudController extends AbstractClientSessionCrudController
+class AllSessionCrudController extends AbstractClientSessionCrudController
 {
     public function __construct(
         private Security $security
@@ -26,25 +23,15 @@ class ClosedClientSessionCrudController extends AbstractClientSessionCrudControl
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Closed Session')
-            ->setEntityLabelInPlural('Closed Sessions')
+            ->setEntityLabelInSingular('Session')
+            ->setEntityLabelInPlural('All Sessions')
             ->setSearchFields(['name', 'phone'])
             ->setDefaultSort(['id' => 'DESC']);
     }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
-    {
-        $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        $qb
-            ->andWhere('entity.closedAt IS NOT NULL')
-            ->andWhere('entity.status = :closedStatus')
-            ->setParameter('closedStatus', ClientSessionStatus::CLOSED->value);
-
-        return $qb;
-    }
-
     public function configureFields(string $pageName): iterable
     {
+        yield IdField::new('id');
         yield TextField::new('phone');
         yield TextField::new('name');
         yield DateTimeField::new('createdAt')->setColumns('col-md-8')->setDisabled();
@@ -68,8 +55,8 @@ class ClosedClientSessionCrudController extends AbstractClientSessionCrudControl
     public function configureActions(Actions $actions): Actions
     {
         $actions = $actions
-                ->add(CRUD::PAGE_INDEX, 'detail')
-                ->disable('new')
+            ->add(CRUD::PAGE_INDEX, 'detail')
+            ->disable('new')
         ;
 
         // запрещаем delete только для Editor
