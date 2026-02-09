@@ -45,6 +45,14 @@
         <source>Session</source>
         <target>Сессия</target>
       </trans-unit>
+      <trans-unit id="GqmFSHc" resname="Password">
+        <source>Password</source>
+        <target>Пароль</target>
+      </trans-unit>
+      <trans-unit id="0GpRD.b" resname="Repeat password">
+        <source>Repeat password</source>
+        <target>Повторить пароль</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
