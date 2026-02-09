@@ -3,6 +3,11 @@
 {% block content %}
     <div id="operator-notify-box" class="mb-4"></div>
 
+    {# 🔊 звук уведомления #}
+    <audio id="notify-sound" preload="auto">
+        <source src="{{ asset('sounds/notification.mp3') }}" type="audio/mpeg">
+    </audio>
+
     {{ parent() }}
 
     <style>
@@ -27,54 +32,113 @@
 
 {% block configured_javascripts %}
     {{ parent() }}
-<script>
-    (function () {
-        async function pollOperatorNotify() {
-            try {
-                const res = await fetch('{{ path('admin_operator_notifications') }}');
-                if (!res.ok) return;
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
-                const data = await res.json();
-                const box = document.getElementById('operator-notify-box');
-                if (!box) return;
+            const box = document.getElementById('operator-notify-box');
+            const sound = document.getElementById('notify-sound');
 
-                box.innerHTML = '';
+            if (!box) {
+                console.warn('operator-notify-box not found');
+                return;
+            }
 
-                if (!data.notifications || data.notifications.length === 0) {
-                    return;
-                }
+            const shown = new Set();
+            let soundUnlocked = false;
 
-                data.notifications.forEach(n => {
-                    const el = document.createElement('div');
-                    el.className = 'alert alert-warning alert-dismissible fade show';
-                    el.setAttribute('role', 'alert');
-                    el.textContent = n.text;
+            // 🔓 Разблокировка звука
+            function unlockSound() {
+                if (soundUnlocked || !sound) return;
+                soundUnlocked = true;
 
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'btn-close';
-                    btn.setAttribute('aria-label', 'Закрыть');
-                    btn.addEventListener('click', async () => {
-                        el.remove();
-                        // уведомляем сервер по уникальному ts
-                        await fetch('{{ path('admin_operator_notification_remove') }}', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                            body: new URLSearchParams({ ts: n.ts })
-                        });
+                sound.play().then(() => {
+                    sound.pause();
+                    sound.currentTime = 0;
+                }).catch(() => {});
+
+                document.removeEventListener('click', unlockSound);
+                document.removeEventListener('keydown', unlockSound);
+            }
+
+            document.addEventListener('click', unlockSound);
+            document.addEventListener('keydown', unlockSound);
+
+            function playSound() {
+                if (!soundUnlocked || !sound) return;
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            }
+
+            async function removeOnServer(ts) {
+                await fetch('{{ path('admin_operator_notification_remove') }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ ts })
+                });
+            }
+
+            async function pollOperatorNotify() {
+                try {
+                    const res = await fetch('{{ path('admin_operator_notifications') }}', {
+                        credentials: 'same-origin'
+                    });
+                    if (!res.ok) return;
+
+                    const data = await res.json();
+                    if (!data.notifications || data.notifications.length === 0) return;
+
+                    let hasNew = false;
+
+                    data.notifications.forEach(n => {
+                        if (shown.has(n.ts)) return;
+
+                        shown.add(n.ts);
+                        hasNew = true;
+
+                        const el = document.createElement('div');
+                        el.className = 'alert alert-warning alert-dismissible fade show';
+                        el.setAttribute('role', 'alert');
+                        el.textContent = n.text;
+
+                        let closed = false;
+
+                        const close = async () => {
+                            if (closed) return;
+                            closed = true;
+
+                            el.classList.remove('show');
+                            setTimeout(async () => {
+                                el.remove();
+                                await removeOnServer(n.ts);
+                            }, 200);
+                        };
+
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'btn-close';
+                        btn.setAttribute('aria-label', 'Закрыть');
+                        btn.addEventListener('click', close);
+
+                        el.appendChild(btn);
+                        box.appendChild(el);
+
+                        // ⏱ автозакрытие
+                        setTimeout(close, 5000);
                     });
 
-                    el.appendChild(btn);
-                    box.appendChild(el);
-                });
-            } catch (e) {
-                console.error('Operator notify error', e);
-            }
-        }
+                    if (hasNew) {
+                        playSound();
+                    }
 
-        pollOperatorNotify();
-        setInterval(pollOperatorNotify, 3000);
-    })();
-</script>
+                } catch (e) {
+                    console.error('Operator notify error', e);
+                }
+            }
+
+            pollOperatorNotify();
+            setInterval(pollOperatorNotify, 3000);
+
+        });
+    </script>
 {% endblock %}
 

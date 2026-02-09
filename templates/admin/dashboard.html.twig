@@ -3,7 +3,14 @@
 {% block content %}
 
     <h1 class="mb-4">Панель оператора</h1>
+
+    {# 🔔 контейнер уведомлений #}
     <div id="operator-notify-box" class="mb-4"></div>
+
+    {# 🔊 звук уведомления #}
+    <audio id="notify-sound" preload="auto">
+        <source src="{{ asset('assets/sounds/opening-message-tone.mp3') }}" type="audio/mpeg">
+    </audio>
 
     <div class="card">
         <div class="card-body">
@@ -23,48 +30,86 @@
     </div>
 
     {{ parent() }}
+
     <script>
         (function () {
+
+            const shown = new Set(); // уже показанные уведомления
+            const box = document.getElementById('operator-notify-box');
+            const sound = document.getElementById('notify-sound');
+
+            function playSound() {
+                if (!sound) return;
+                sound.currentTime = 0;
+                sound.play().catch(() => {
+                    // autoplay может быть заблокирован — это нормально
+                });
+            }
+
+            async function removeOnServer(ts) {
+                await fetch('{{ path('admin_operator_notification_remove') }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ ts })
+                });
+            }
+
             async function pollOperatorNotify() {
                 try {
-                    const res = await fetch('{{ path('admin_operator_notifications') }}');
+                    const res = await fetch('{{ path('admin_operator_notifications') }}', {
+                        credentials: 'same-origin'
+                    });
                     if (!res.ok) return;
 
                     const data = await res.json();
-                    const box = document.getElementById('operator-notify-box');
-                    if (!box) return;
-
-                    box.innerHTML = '';
-
                     if (!data.notifications || data.notifications.length === 0) {
                         return;
                     }
 
+                    let hasNew = false;
+
                     data.notifications.forEach(n => {
+                        if (shown.has(n.ts)) return;
+
+                        shown.add(n.ts);
+                        hasNew = true;
+
                         const el = document.createElement('div');
                         el.className = 'alert alert-warning alert-dismissible fade show';
                         el.setAttribute('role', 'alert');
                         el.textContent = n.text;
 
+                        let closed = false;
+
+                        const close = async () => {
+                            if (closed) return;
+                            closed = true;
+
+                            el.classList.remove('show');
+                            setTimeout(async () => {
+                                el.remove();
+                                await removeOnServer(n.ts);
+                            }, 200);
+                        };
+
                         const btn = document.createElement('button');
                         btn.type = 'button';
                         btn.className = 'btn-close';
                         btn.setAttribute('aria-label', 'Закрыть');
-                        btn.addEventListener('click', async () => {
-                            el.remove();
-                            // уведомляем сервер по уникальному ts
-                            await fetch('{{ path('admin_operator_notification_remove') }}', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                                body: new URLSearchParams({ ts: n.ts })
-                            });
-                        });
+                        btn.addEventListener('click', close);
 
                         el.appendChild(btn);
                         box.appendChild(el);
-                        // Close alert on 5 sec
+
+                        // ⏱ автозакрытие через 5 сек
                         setTimeout(close, 5000);
                     });
+
+                    // 🔔 звук только если появились новые
+                    if (hasNew) {
+                        playSound();
+                    }
+
                 } catch (e) {
                     console.error('Operator notify error', e);
                 }
@@ -72,6 +117,7 @@
 
             pollOperatorNotify();
             setInterval(pollOperatorNotify, 3000);
+
         })();
     </script>
 
@@ -79,20 +125,25 @@
         .content-wrapper {
             display: block;
         }
+
         #operator-notify-box {
-            max-width: 400px;
+            max-width: 420px;
         }
+
         #operator-notify-box .alert {
             position: relative;
-            padding-right: 2rem;
-            margin-bottom: 5px;
+            padding-right: 2.5rem;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
         }
+
         #operator-notify-box .btn-close {
             position: absolute;
-            top: 1.2rem;
-            right: 0.5rem;
+            top: 1rem;
+            right: 0.6rem;
         }
     </style>
 
 {% endblock %}
+
 
